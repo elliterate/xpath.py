@@ -43,3 +43,30 @@ def button(locator):
     expr += descendant("input")[attr("type").equals("image")][attr("alt").is_(locator)]
 
     return expr
+
+
+def link(locator):
+    """
+    Returns an `Expression` for finding links matching the given locator.
+
+    The query defines a link as an `a` element with an `href` attribute and will match links that
+    meet at least one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element `title` matches the locator
+    * the element text matches the locator
+    * the `alt` of a nested `img` element matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired links.
+
+    Returns:
+        Expression: An `Expression` object matching the desired links.
+    """
+
+    expr = descendant("a")[attr("href")][
+        attr("id").equals(locator) |
+        attr("title").is_(locator) |
+        string.n.is_(locator) |
+        descendant("img")[attr("alt").is_(locator)]]
+
+    return expr

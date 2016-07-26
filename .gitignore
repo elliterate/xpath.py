@@ -1,0 +1,5 @@
+*.egg
+*.egg-info/
+*.pyc
+.eggs/
+ghostdriver.log

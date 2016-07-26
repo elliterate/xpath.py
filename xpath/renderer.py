@@ -25,6 +25,10 @@ def normalized_space(expr):
     return "normalize-space({0})".format(expr)
 
 
+def one_of(expr, values):
+    return " or ".join(["{0} = {1}".format(expr, value) for value in values])
+
+
 def or_(*exprs):
     return "({0})".format(" or ".join(exprs))
 

@@ -8,6 +8,7 @@ from xpath.renderer import (
     equality,
     is_,
     normalized_space,
+    one_of,
     or_,
     string_literal,
     this_node,
@@ -21,6 +22,7 @@ def button(locator, exact=False):
 
     The query defines a button as one of the following:
     * a `button` element
+    * an `input` element with a `type` of "reset"
     * an `input` element with a `type` of "submit"
 
     The query will match buttons that meet at least one of the following criteria:
@@ -59,9 +61,10 @@ def button(locator, exact=False):
                     exact=exact))),
         where(
             descendant(this_node(), "input"),
-            equality(
+            one_of(
                 attribute(this_node(), "type"),
-                string_literal("submit")),
+                [string_literal("reset"),
+                 string_literal("submit")]),
             or_(
                 equality(
                     attribute(this_node(), "id"),

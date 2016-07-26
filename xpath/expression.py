@@ -3,6 +3,7 @@ from xpath.literal import Literal
 
 
 class ExpressionKind(Enum):
+    ANYWHERE = "ANYWHERE"
     ATTR = "ATTR"
     CONTAINS = "CONTAINS"
     DESCENDANT = "DESCENDANT"
@@ -75,19 +76,23 @@ class Expression(object):
 
         return Expression(ExpressionKind.CONTAINS, self.current, expression)
 
-    def descendant(self, element_name):
+    def descendant(self, expression):
         """
         Returns an expression representing any descendants of the current node (represented by the
-        current expression) with the given element name.
+        current expression) that match the given expression or element name.
 
         Args:
-            element_name (str): The name of the descendant elements to match.
+            expression (Expression | str): An `Expression` or element name representing the
+                descendants to match.
 
         Returns:
             Expression: A new `Expression` representing the matched descendant nodes.
         """
 
-        return Expression(ExpressionKind.DESCENDANT, self.current, Literal(element_name))
+        if isinstance(expression, str):
+            expression = Literal(expression)
+
+        return Expression(ExpressionKind.DESCENDANT, self.current, expression)
 
     def equals(self, expression):
         """

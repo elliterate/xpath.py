@@ -37,5 +37,10 @@ def this_node():
     return "."
 
 
-def where(expr, predicate_expr):
-    return "{0}[{1}]".format(expr, predicate_expr)
+def union(*exprs):
+    return " | ".join(exprs)
+
+
+def where(expr, *predicate_exprs):
+    predicates = ["[{0}]".format(predicate_expr) for predicate_expr in predicate_exprs]
+    return "{0}{1}".format(expr, "".join(predicates))

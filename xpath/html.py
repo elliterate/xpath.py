@@ -11,12 +11,17 @@ from xpath.renderer import (
     or_,
     string_literal,
     this_node,
+    union,
     where)
 
 
 def button(locator, exact=False):
     """
     Returns an XPath query for finding buttons matching the given locator.
+
+    The query defines a button as one of the following:
+    * a `button` element
+    * an `input` element with a `type` of "submit"
 
     The query will match buttons that meet at least one of the following criteria:
     * the element `id` exactly matches the locator
@@ -33,21 +38,39 @@ def button(locator, exact=False):
         str: An XPath query matching the desired buttons.
     """
 
-    return where(
-        descendant(this_node(), "button"),
-        or_(
+    return union(
+        where(
+            descendant(this_node(), "button"),
+            or_(
+                equality(
+                    attribute(this_node(), "id"),
+                    string_literal(locator)),
+                is_(
+                    attribute(this_node(), "value"),
+                    string_literal(locator),
+                    exact=exact),
+                is_(
+                    attribute(this_node(), "title"),
+                    string_literal(locator),
+                    exact=exact),
+                is_(
+                    normalized_space(this_node()),
+                    string_literal(locator),
+                    exact=exact))),
+        where(
+            descendant(this_node(), "input"),
             equality(
-                attribute(this_node(), "id"),
-                string_literal(locator)),
-            is_(
-                attribute(this_node(), "value"),
-                string_literal(locator),
-                exact=exact),
-            is_(
-                attribute(this_node(), "title"),
-                string_literal(locator),
-                exact=exact),
-            is_(
-                normalized_space(this_node()),
-                string_literal(locator),
-                exact=exact)))
+                attribute(this_node(), "type"),
+                string_literal("submit")),
+            or_(
+                equality(
+                    attribute(this_node(), "id"),
+                    string_literal(locator)),
+                is_(
+                    attribute(this_node(), "value"),
+                    string_literal(locator),
+                    exact=exact),
+                is_(
+                    attribute(this_node(), "title"),
+                    string_literal(locator),
+                    exact=exact))))

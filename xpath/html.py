@@ -22,6 +22,7 @@ def button(locator, exact=False):
 
     The query defines a button as one of the following:
     * a `button` element
+    * an `input` element with a `type` of "button"
     * an `input` element with a `type` of "reset"
     * an `input` element with a `type` of "submit"
 
@@ -63,7 +64,8 @@ def button(locator, exact=False):
             descendant(this_node(), "input"),
             one_of(
                 attribute(this_node(), "type"),
-                [string_literal("reset"),
+                [string_literal("button"),
+                 string_literal("reset"),
                  string_literal("submit")]),
             or_(
                 equality(

@@ -6,6 +6,37 @@ class ButtonTestCase(HTMLTestCase):
     __matcher__ = "button"
 
 
+class TestButtonTypeInputTag(ButtonTestCase):
+    def test_finds_buttons_by_id(self):
+        self.assertEqual(self.get("button-with-id"), "id-button")
+
+    def test_finds_buttons_by_value(self):
+        self.assertEqual(self.get("button-with-value"), "value-button")
+
+    def test_finds_buttons_by_approximate_value(self):
+        self.assertEqual(self.get("ton-with-val"), "value-button")
+
+    def test_finds_buttons_by_title(self):
+        self.assertEqual(self.get("My button title"), "title-button")
+
+    def test_finds_buttons_by_approximate_title(self):
+        self.assertEqual(self.get("button title"), "title-button")
+
+
+class TestExactButtonTypeInputTag(ButtonTestCase):
+    def test_finds_buttons_by_value(self):
+        self.assertEqual(self.get("button-with-value", exact=True), "value-button")
+
+    def test_does_not_find_buttons_by_approximate_value(self):
+        self.assertIsNone(self.get("ton-with-val", exact=True))
+
+    def test_finds_buttons_by_title(self):
+        self.assertEqual(self.get("My button title", exact=True), "title-button")
+
+    def test_does_not_find_buttons_by_title(self):
+        self.assertIsNone(self.get("button title", exact=True))
+
+
 class TestResetTypeInputTag(ButtonTestCase):
     def test_finds_buttons_by_id(self):
         self.assertEqual(self.get("reset-with-id"), "id-reset")

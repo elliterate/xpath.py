@@ -37,6 +37,49 @@ class TestExactButtonTypeInputTag(ButtonTestCase):
         self.assertIsNone(self.get("button title", exact=True))
 
 
+class TestImageTypeInputTag(ButtonTestCase):
+    def test_finds_buttons_by_id(self):
+        self.assertEqual(self.get("imgbut-with-id"), "id-imgbut")
+
+    def test_finds_buttons_by_value(self):
+        self.assertEqual(self.get("imgbut-with-value"), "value-imgbut")
+
+    def test_finds_buttons_by_approximate_value(self):
+        self.assertEqual(self.get("gbut-with-val"), "value-imgbut")
+
+    def test_finds_buttons_by_alt_attribute(self):
+        self.assertEqual(self.get("imgbut-with-alt"), "alt-imgbut")
+
+    def test_finds_buttons_by_approximate_alt_attribute(self):
+        self.assertEqual(self.get("mgbut-with-al"), "alt-imgbut")
+
+    def test_finds_buttons_by_title(self):
+        self.assertEqual(self.get("My imgbut title"), "title-imgbut")
+
+    def test_finds_buttons_by_approximate_title(self):
+        self.assertEqual(self.get("imgbut title"), "title-imgbut")
+
+
+class TestExactImageTypeInputTag(ButtonTestCase):
+    def test_finds_buttons_by_value(self):
+        self.assertEqual(self.get("imgbut-with-value", exact=True), "value-imgbut")
+
+    def test_does_not_find_buttons_by_approximate_value(self):
+        self.assertIsNone(self.get("gbut-with-val", exact=True))
+
+    def test_finds_buttons_by_alt_attribute(self):
+        self.assertEqual(self.get("imgbut-with-alt", exact=True), "alt-imgbut")
+
+    def test_does_not_find_buttons_by_approximate_alt_attribute(self):
+        self.assertIsNone(self.get("mgbut-with-al", exact=True))
+
+    def test_finds_buttons_by_title(self):
+        self.assertEqual(self.get("My imgbut title", exact=True), "title-imgbut")
+
+    def test_does_not_find_buttons_by_title(self):
+        self.assertIsNone(self.get("imgbut title", exact=True))
+
+
 class TestResetTypeInputTag(ButtonTestCase):
     def test_finds_buttons_by_id(self):
         self.assertEqual(self.get("reset-with-id"), "id-reset")

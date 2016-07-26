@@ -3,6 +3,20 @@
 XPath is a Python DSL around a subset of XPath 1.0. Its primary purpose is to
 facilitate writing complex XPath queries from Python code.
 
+## HTML
+
+XPath comes with a set of premade XPaths for use with HTML documents.
+
+You can generate these like this:
+
+``` python
+from xpath.html import button
+
+button("Save", exact=True)
+```
+
+See [`xpath.html`](xpath/html.py) for all available matchers.
+
 ## License
 
 (The MIT License)

@@ -3,6 +3,7 @@ import os
 import pytest
 import unittest
 from xpath import html
+from xpath.renderer import to_xpath
 
 
 _TEST_DIR = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -64,7 +65,8 @@ class HTMLTestCase(TestCase):
         matcher = getattr(html, matcher_name)
 
         # Find all matching elements.
-        xpath = matcher(locator, exact=exact)
+        expression = matcher(locator)
+        xpath = to_xpath(expression, exact=exact)
         elements = self.driver.find_elements_by_xpath(xpath)
 
         return elements[0].get_attribute("data") if len(elements) else None

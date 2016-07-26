@@ -1,4 +1,10 @@
 from setuptools import setup, find_packages
+import sys
+
+
+install_requires = []
+if sys.version_info < (3, 4):
+    install_requires.append("enum34")
 
 
 setup(
@@ -11,6 +17,6 @@ setup(
     author_email="ian@elliterate.com",
     license="MIT",
     packages=find_packages(exclude=["tests*"]),
-    install_requires=[],
+    install_requires=install_requires,
     setup_requires=["pytest-runner"],
     tests_require=["pytest", "selenium"])

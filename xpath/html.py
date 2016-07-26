@@ -1,24 +1,13 @@
 """
-A set of XPath query generators for matching semantic HTML elements.
+A set of `Expression` generators for matching semantic HTML elements.
 """
 
-from xpath.renderer import (
-    attribute,
-    descendant,
-    equality,
-    is_,
-    normalized_space,
-    one_of,
-    or_,
-    string_literal,
-    this_node,
-    union,
-    where)
+from xpath.dsl import attr, descendant, string
 
 
-def button(locator, exact=False):
+def button(locator):
     """
-    Returns an XPath query for finding buttons matching the given locator.
+    Returns an `Expression` for finding buttons matching the given locator.
 
     The query defines a button as one of the following:
     * a `button` element
@@ -36,58 +25,21 @@ def button(locator, exact=False):
 
     Args:
         locator (str): A string that identifies the desired buttons.
-        exact (bool, optional): Whether the query should perform an exact match with the given
-            locator. Defaults to False.
 
     Returns:
-        str: An XPath query matching the desired buttons.
+        Expression: An `Expression` object matching the desired buttons.
     """
 
-    return union(
-        where(
-            descendant(this_node(), "button"),
-            or_(
-                equality(
-                    attribute(this_node(), "id"),
-                    string_literal(locator)),
-                is_(
-                    attribute(this_node(), "value"),
-                    string_literal(locator),
-                    exact=exact),
-                is_(
-                    attribute(this_node(), "title"),
-                    string_literal(locator),
-                    exact=exact),
-                is_(
-                    normalized_space(this_node()),
-                    string_literal(locator),
-                    exact=exact))),
-        where(
-            descendant(this_node(), "input"),
-            one_of(
-                attribute(this_node(), "type"),
-                [string_literal("button"),
-                 string_literal("image"),
-                 string_literal("reset"),
-                 string_literal("submit")]),
-            or_(
-                equality(
-                    attribute(this_node(), "id"),
-                    string_literal(locator)),
-                is_(
-                    attribute(this_node(), "value"),
-                    string_literal(locator),
-                    exact=exact),
-                is_(
-                    attribute(this_node(), "title"),
-                    string_literal(locator),
-                    exact=exact))),
-        where(
-            descendant(this_node(), "input"),
-            equality(
-                attribute(this_node(), "type"),
-                string_literal("image")),
-            is_(
-                attribute(this_node(), "alt"),
-                string_literal(locator),
-                exact=exact)))
+    expr = descendant("button")[
+        attr("id").equals(locator) |
+        attr("value").is_(locator) |
+        attr("title").is_(locator) |
+        string.n.is_(locator)]
+    expr += descendant("input")[attr("type").one_of("submit", "reset", "image", "button")][
+        attr("id").equals(locator) |
+        attr("value").is_(locator) |
+        attr("title").is_(locator) |
+        string.n.is_(locator)]
+    expr += descendant("input")[attr("type").equals("image")][attr("alt").is_(locator)]
+
+    return expr

@@ -211,6 +211,40 @@ def link_or_button(locator):
     return link(locator) + button(locator)
 
 
+def optgroup(locator):
+    """
+    Returns an `Expression` for finding option groups matching the given locator.
+
+    The query will match option groups whose `label` matches the locator.
+
+    Args:
+        locator (str): A string that identifies the desired option groups.
+
+    Returns:
+        Expression: An `Expression` object matching the desired option groups.
+    """
+
+    expr = descendant("optgroup")[attr("label").is_(locator)]
+    return expr
+
+
+def option(locator):
+    """
+    Returns an `Expression` for finding options matching the given locator.
+
+    The query will match options whose text matches the locator.
+
+    Args:
+        locator (str): A string that identifies the desired options.
+
+    Returns:
+        Expression: An `Expression` object matching the desired options.
+    """
+
+    expr = descendant("option")[string.n.is_(locator)]
+    return expr
+
+
 def radio_button(locator):
     """
     Returns an `Expression` for finding radio buttons matching the given locator.

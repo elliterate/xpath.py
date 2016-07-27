@@ -166,6 +166,28 @@ def radio_button(locator):
     return _locate_field(field_expr, locator)
 
 
+def select(locator):
+    """
+    Returns an `Expression` for finding selects matching the given locator.
+
+    The query will match selects that meet at least one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element `name` exactly matches the locator
+    * the element `id` exactly matches the `for` attribute of a corresponding `label` element
+      whose text matches the locator
+    * the element is nested within a `label` element whose text matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired selects.
+
+    Returns:
+        Expression: An `Expression` object matching the desired selects.
+    """
+
+    field_expr = descendant("select")
+    return _locate_field(field_expr, locator)
+
+
 def _locate_field(field_expr, locator):
     expr = field_expr[
         attr("id").equals(locator) |

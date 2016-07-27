@@ -139,6 +139,35 @@ def file_field(locator):
     return _locate_field(field_expr, locator)
 
 
+def fillable_field(locator):
+    """
+    Returns an `Expression` for finding fillable fields matching the given locator.
+
+    The query defines a fillable field as one of the following:
+    * an `input` element whose `type` is neither "checkbox", "file", "hidden", "image", "radio",
+      nor "submit"
+    * a `textarea` element
+
+    The query will match fillable fields that meet at least one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element `name` exactly matches the locator
+    * the element `placeholder` exactly matches the locator
+    * the element `id` exactly matches the `for` attribute of a corresponding `label` element
+      whose text matches the locator
+    * the element is nested within a `label` element whose text matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired fillable fields.
+
+    Returns:
+        Expression: An `Expression` object matching the desired fillable fields.
+    """
+
+    field_expr = descendant("input", "textarea")[
+        ~attr("type").one_of("checkbox", "file", "hidden", "image", "radio", "submit")]
+    return _locate_field(field_expr, locator)
+
+
 def link(locator):
     """
     Returns an `Expression` for finding links matching the given locator.

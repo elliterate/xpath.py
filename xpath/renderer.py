@@ -17,6 +17,7 @@ class Renderer(object):
         ExpressionKind.NORMALIZED_SPACE: "_normalized_space",
         ExpressionKind.ONE_OF: "_one_of",
         ExpressionKind.OR: "_or",
+        ExpressionKind.PREVIOUS_SIBLING: "_previous_sibling",
         ExpressionKind.STRING: "_string_function",
         ExpressionKind.THIS_NODE: "_this_node",
         ExpressionKind.UNION: "_union",
@@ -99,6 +100,9 @@ class Renderer(object):
 
     def _or(self, *exprs):
         return "({0})".format(" or ".join(exprs))
+
+    def _previous_sibling(self, node, element_name):
+        return "{0}/preceding-sibling::*[1]/self::{1}".format(node, element_name)
 
     def _string_function(self, expr):
         return "string({0})".format(expr)

@@ -14,6 +14,7 @@ class ExpressionKind(Enum):
     NORMALIZED_SPACE = "NORMALIZED_SPACE"
     ONE_OF = "ONE_OF"
     OR = "OR"
+    PREVIOUS_SIBLING = "PREVIOUS_SIBLING"
     STRING = "STRING"
     THIS_NODE = "THIS_NODE"
     UNION = "UNION"
@@ -197,6 +198,20 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.OR, self.current, expression)
+
+    def previous_sibling(self, element_name):
+        """
+        Returns an expression representing the sibling immediately preceding the element represented
+        by the current expression.
+
+        Args:
+            element_name (str): The name of the sibling element.
+
+        Returns:
+            Expression: A new `Expression` representing the preceding sibling element.
+        """
+
+        return Expression(ExpressionKind.PREVIOUS_SIBLING, self.current, Literal(element_name))
 
     @property
     def string(self):

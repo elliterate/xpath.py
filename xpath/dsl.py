@@ -11,6 +11,7 @@ current = Expression(ExpressionKind.THIS_NODE)
 attr = current.attr
 child = current.child
 descendant = current.descendant
+previous_sibling = current.previous_sibling
 string = current.string
 
 

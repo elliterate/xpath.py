@@ -2,7 +2,7 @@
 A set of `Expression` generators for matching semantic HTML elements.
 """
 
-from xpath.dsl import anywhere, attr, child, descendant, string
+from xpath.dsl import anywhere, attr, child, descendant, previous_sibling, string
 
 
 def button(locator):
@@ -65,6 +65,28 @@ def checkbox(locator):
 
     field_expr = descendant("input")[attr("type").equals("checkbox")]
     return _locate_field(field_expr, locator)
+
+
+def definition_description(locator):
+    """
+    Returns an `Expression` for finding definition descriptions matching the given locator.
+
+    The query will match definition descriptions that meet at least one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element immediately follows a sibling `dt` whose text matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired definition descriptions.
+
+    Returns:
+        Expression: An `Expression` object matching the desired definition descriptions.
+    """
+
+    expr = descendant("dd")[
+        attr("id").equals(locator) |
+        previous_sibling("dt")[string.n.equals(locator)]]
+
+    return expr
 
 
 def field(locator):

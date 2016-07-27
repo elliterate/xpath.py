@@ -144,6 +144,28 @@ def link(locator):
     return expr
 
 
+def radio_button(locator):
+    """
+    Returns an `Expression` for finding radio buttons matching the given locator.
+
+    The query will match radio buttons that meet at least one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element `name` exactly matches the locator
+    * the element `id` exactly matches the `for` attribute of a corresponding `label` element
+      whose text matches the locator
+    * the element is nested within a `label` element whose text matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired radio buttons.
+
+    Returns:
+        Expression: An `Expression` object matching the desired radio buttons.
+    """
+
+    field_expr = descendant("input")[attr("type").equals("radio")]
+    return _locate_field(field_expr, locator)
+
+
 def _locate_field(field_expr, locator):
     expr = field_expr[
         attr("id").equals(locator) |

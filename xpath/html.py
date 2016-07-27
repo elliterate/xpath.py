@@ -2,7 +2,7 @@
 A set of `Expression` generators for matching semantic HTML elements.
 """
 
-from xpath.dsl import anywhere, attr, descendant, string
+from xpath.dsl import anywhere, attr, child, descendant, string
 
 
 def button(locator):
@@ -93,6 +93,28 @@ def field(locator):
     field_expr = descendant("input", "select", "textarea")[
         ~attr("type").one_of("hidden", "image", "submit")]
     return _locate_field(field_expr, locator)
+
+
+def fieldset(locator):
+    """
+    Returns an `Expression` for finding fieldsets matching the given locator.
+
+    The query will match fieldsets that meet at least one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element has a child `legend` element whose text matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired fieldsets.
+
+    Returns:
+        Expression: An `Expression` object matching the desired fieldsets.
+    """
+
+    expr = descendant("fieldset")[
+        attr("id").equals(locator) |
+        child("legend")[string.n.is_(locator)]]
+
+    return expr
 
 
 def link(locator):

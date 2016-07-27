@@ -8,6 +8,7 @@ class Renderer(object):
     _RENDER_METHOD_NAMES = {
         ExpressionKind.ANYWHERE: "_anywhere",
         ExpressionKind.ATTR: "_attribute",
+        ExpressionKind.CHILD: "_child",
         ExpressionKind.CONTAINS: "_contains",
         ExpressionKind.DESCENDANT: "_descendant",
         ExpressionKind.EQUALITY: "_equality",
@@ -62,6 +63,9 @@ class Renderer(object):
 
     def _attribute(self, node, attribute_name):
         return "{0}/@{1}".format(node, attribute_name)
+
+    def _child(self, parent, element_name):
+        return "{0}/{1}".format(parent, element_name)
 
     def _contains(self, expr, value):
         return "contains({0}, {1})".format(expr, value)

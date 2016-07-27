@@ -5,6 +5,7 @@ from xpath.literal import Literal
 class ExpressionKind(Enum):
     ANYWHERE = "ANYWHERE"
     ATTR = "ATTR"
+    CHILD = "CHILD"
     CONTAINS = "CONTAINS"
     DESCENDANT = "DESCENDANT"
     EQUALITY = "EQUALITY"
@@ -65,6 +66,24 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.ATTR, self.current, Literal(attribute_name))
+
+    def child(self, expression):
+        """
+        Returns an expression representing any children of the current node (represented by the
+        current expression) that match the given expression or element name.
+
+        Args:
+            expression: (Expression | str): An `Expression` or element name representing the
+                children to match.
+
+        Returns:
+            Expression: A new `Expression` representing the matched child nodes.
+        """
+
+        if isinstance(expression, str):
+            expression = Literal(expression)
+
+        return Expression(ExpressionKind.CHILD, self.current, expression)
 
     def contains(self, expression):
         """

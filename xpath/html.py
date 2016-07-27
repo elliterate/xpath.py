@@ -144,6 +144,22 @@ def link(locator):
     return expr
 
 
+def link_or_button(locator):
+    """
+    Returns an `Expression` for finding links or buttons matching the given locator.
+
+    See the `link` and `button` methods for more information on what they match.
+
+    Args:
+        locator (str): A string that identifies the desired links and buttons.
+
+    Returns:
+        Expression: An `Expression` object matching the desired links and buttons.
+    """
+
+    return link(locator) + button(locator)
+
+
 def radio_button(locator):
     """
     Returns an `Expression` for finding radio buttons matching the given locator.

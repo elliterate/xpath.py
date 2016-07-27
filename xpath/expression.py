@@ -8,6 +8,7 @@ class ExpressionKind(Enum):
     CONTAINS = "CONTAINS"
     DESCENDANT = "DESCENDANT"
     EQUALITY = "EQUALITY"
+    INVERSE = "INVERSE"
     IS = "IS"
     NORMALIZED_SPACE = "NORMALIZED_SPACE"
     ONE_OF = "ONE_OF"
@@ -45,6 +46,9 @@ class Expression(object):
     def __getitem__(self, expression):
         return self.where(expression)
 
+    def __invert__(self):
+        return self.inverse
+
     def __or__(self, expression):
         return self.or_(expression)
 
@@ -76,23 +80,23 @@ class Expression(object):
 
         return Expression(ExpressionKind.CONTAINS, self.current, expression)
 
-    def descendant(self, expression):
+    def descendant(self, *expressions):
         """
         Returns an expression representing any descendants of the current node (represented by the
-        current expression) that match the given expression or element name.
+        current expression) that match the given expressions or element names.
 
         Args:
-            expression (Expression | str): An `Expression` or element name representing the
-                descendants to match.
+            *expressions (list(Expression | str)): A list of `Expression` objects or element names
+                representing the descendants to match.
 
         Returns:
             Expression: A new `Expression` representing the matched descendant nodes.
         """
 
-        if isinstance(expression, str):
-            expression = Literal(expression)
+        expressions = [Literal(expression) if isinstance(expression, str) else expression
+                       for expression in expressions]
 
-        return Expression(ExpressionKind.DESCENDANT, self.current, expression)
+        return Expression(ExpressionKind.DESCENDANT, self.current, expressions)
 
     def equals(self, expression):
         """
@@ -107,6 +111,17 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.EQUALITY, self.current, expression)
+
+    @property
+    def inverse(self):
+        """
+        Returns an expression that represents the inverse of this one.
+
+        Returns:
+            Expression: A new `Expression` representing the inverse of this one.
+        """
+
+        return Expression(ExpressionKind.INVERSE, self.current)
 
     def is_(self, expression):
         """

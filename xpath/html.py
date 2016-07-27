@@ -63,15 +63,36 @@ def checkbox(locator):
         Expression: An `Expression` object matching the desired checkboxes.
     """
 
-    base_expr = descendant("input")[attr("type").equals("checkbox")]
+    field_expr = descendant("input")[attr("type").equals("checkbox")]
+    return _locate_field(field_expr, locator)
 
-    expr = base_expr[
-        attr("id").equals(locator) |
-        attr("name").equals(locator) |
-        attr("id").equals(anywhere("label")[string.n.is_(locator)].attr("for"))]
-    expr += descendant("label")[string.n.is_(locator)].descendant(base_expr)
 
-    return expr
+def field(locator):
+    """
+    Returns an `Expression` for finding form fields matching the given locator.
+
+    The query defines a form field as one of the following:
+    * an `input` element whose `type` is neither "hidden", "image", nor "submit"
+    * a `select` element
+    * a `textarea` element
+
+    The query will match form fields that meet at least one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element `name` exactly matches the locator
+    * the element `placeholder` exactly matches the locator
+    * the element `id` exactly matches the `for` attribute of a corresponding `label` element
+      whose text matches the locator
+    * the element is nested within a `label` element whose text matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired form fields.
+    Return:
+        Expression: An `Expression` object matching the desired form fields.
+    """
+
+    field_expr = descendant("input", "select", "textarea")[
+        ~attr("type").one_of("hidden", "image", "submit")]
+    return _locate_field(field_expr, locator)
 
 
 def link(locator):
@@ -97,5 +118,16 @@ def link(locator):
         attr("title").is_(locator) |
         string.n.is_(locator) |
         descendant("img")[attr("alt").is_(locator)]]
+
+    return expr
+
+
+def _locate_field(field_expr, locator):
+    expr = field_expr[
+        attr("id").equals(locator) |
+        attr("name").equals(locator) |
+        attr("placeholder").equals(locator) |
+        attr("id").equals(anywhere("label")[string.n.is_(locator)].attr("for"))]
+    expr += descendant("label")[string.n.is_(locator)].descendant(field_expr)
 
     return expr

@@ -11,6 +11,7 @@ class Renderer(object):
         ExpressionKind.CONTAINS: "_contains",
         ExpressionKind.DESCENDANT: "_descendant",
         ExpressionKind.EQUALITY: "_equality",
+        ExpressionKind.INVERSE: "_inverse",
         ExpressionKind.IS: "_is",
         ExpressionKind.NORMALIZED_SPACE: "_normalized_space",
         ExpressionKind.ONE_OF: "_one_of",
@@ -65,11 +66,20 @@ class Renderer(object):
     def _contains(self, expr, value):
         return "contains({0}, {1})".format(expr, value)
 
-    def _descendant(self, node, element_name):
-        return "{0}//{1}".format(node, element_name)
+    def _descendant(self, parent, element_names):
+        if len(element_names) == 1:
+            return "{0}//{1}".format(parent, element_names[0])
+        elif len(element_names) > 1:
+            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
+            return "{0}//*[{1}]".format(parent, element_names_xpath)
+        else:
+            return "{0}//*".format(parent)
 
     def _equality(self, expr1, expr2):
         return "{0} = {1}".format(expr1, expr2)
+
+    def _inverse(self, expr):
+        return "not({0})".format(expr)
 
     def _is(self, expr1, expr2):
         if self.exact:

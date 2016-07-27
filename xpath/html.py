@@ -255,6 +255,28 @@ def select(locator):
     return _locate_field(field_expr, locator)
 
 
+def table(locator):
+    """
+    Returns an `Expression` for finding tables matching the given locator.
+
+    The query will match tables that meet at least one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element has a descendant `caption` element whose text matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired tables.
+
+    Returns:
+        Expression: An `Expression` object matching the desired tables.
+    """
+
+    expr = descendant("table")[
+        attr("id").equals(locator) |
+        descendant("caption").is_(locator)]
+
+    return expr
+
+
 def _locate_field(field_expr, locator):
     expr = field_expr[
         attr("id").equals(locator) |

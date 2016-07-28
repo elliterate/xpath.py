@@ -3,6 +3,8 @@
 XPath is a Python DSL around a subset of XPath 1.0. Its primary purpose is to
 facilitate writing complex XPath queries from Python code.
 
+[![Build Status](https://secure.travis-ci.org/elliterate/xpath.py.svg?branch=master)](http://travis-ci.org/elliterate/xpath.py)
+
 ## Generating expressions
 
 To create expressions, use the generators in [`xpath.dsl`](xpath/dsl.py):

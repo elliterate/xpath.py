@@ -1,3 +1,4 @@
+import sys
 from xpath.expression import Expression, ExpressionKind
 from xpath.literal import Literal
 
@@ -54,7 +55,7 @@ class Renderer(object):
             return self.render(argument)
         if isinstance(argument, list):
             return [self._convert_argument(element) for element in argument]
-        if isinstance(argument, str):
+        if _is_string(argument):
             return self._string_literal(argument)
         if isinstance(argument, Literal):
             return argument.value
@@ -108,6 +109,7 @@ class Renderer(object):
         return "string({0})".format(expr)
 
     def _string_literal(self, string):
+        string = _ensure_string(string)
         return "'{0}'".format(string)
 
     def _this_node(self):
@@ -135,3 +137,17 @@ def to_xpath(node, exact=False):
     """
 
     return Renderer(exact=exact).render(node)
+
+
+if sys.version_info >= (3, 0):
+    def _is_string(argument):
+        return isinstance(argument, (str, bytes))
+
+    def _ensure_string(string):
+        return string.decode("UTF-8") if isinstance(string, bytes) else string
+else:
+    def _is_string(argument):
+        return isinstance(argument, (str, unicode))
+
+    def _ensure_string(string):
+        return string.encode("UTF-8") if isinstance(string, unicode) else string

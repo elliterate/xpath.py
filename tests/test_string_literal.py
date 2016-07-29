@@ -29,3 +29,14 @@ class TestStringLiteral(DSLTestCase):
         xpath = to_xpath(descendant("div")[attr("title") == locator])
         results = self.find_all(xpath)
         self.assertEqual(results[0].get_attribute("id"), "unicode")
+
+    def test_matches_quotes(self):
+        locator = "Who's quotes? \"Their\" quotes."
+
+        xpath = to_xpath(descendant("div")[string.n.is_(locator)])
+        results = self.find_all(xpath)
+        self.assertEqual(results[0].get_attribute("id"), "quotes")
+
+        xpath = to_xpath(descendant("div")[attr("title") == locator])
+        results = self.find_all(xpath)
+        self.assertEqual(results[0].get_attribute("id"), "quotes")

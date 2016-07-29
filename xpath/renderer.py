@@ -110,7 +110,17 @@ class Renderer(object):
 
     def _string_literal(self, string):
         string = _ensure_string(string)
-        return "'{0}'".format(string)
+
+        def wrap(s):
+            return "'{0}'".format(s)
+
+        if "'" in string:
+            parts = string.split("'")
+            parts = map(wrap, parts)
+
+            return "concat(" + ",\"'\",".join(parts) + ")"
+        else:
+            return wrap(string)
 
     def _this_node(self):
         return "."

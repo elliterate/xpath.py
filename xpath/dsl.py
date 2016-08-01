@@ -10,6 +10,7 @@ current = Expression(ExpressionKind.THIS_NODE)
 
 attr = current.attr
 child = current.child
+contains = current.contains
 descendant = current.descendant
 name = current.name
 previous_sibling = current.previous_sibling

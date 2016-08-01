@@ -14,6 +14,7 @@ contains = current.contains
 descendant = current.descendant
 name = current.name
 previous_sibling = current.previous_sibling
+starts_with = current.starts_with
 string = current.string
 text = current.text
 

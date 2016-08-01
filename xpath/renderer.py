@@ -21,6 +21,7 @@ class Renderer(object):
         ExpressionKind.ONE_OF: "_one_of",
         ExpressionKind.OR: "_or",
         ExpressionKind.PREVIOUS_SIBLING: "_previous_sibling",
+        ExpressionKind.STARTS_WITH: "_starts_with",
         ExpressionKind.STRING: "_string_function",
         ExpressionKind.TEXT: "_text",
         ExpressionKind.THIS_NODE: "_this_node",
@@ -113,6 +114,9 @@ class Renderer(object):
 
     def _previous_sibling(self, node, element_name):
         return "{0}/preceding-sibling::*[1]/self::{1}".format(node, element_name)
+
+    def _starts_with(self, current, expr):
+        return "starts-with({0}, {1})".format(current, expr)
 
     def _string_function(self, expr):
         return "string({0})".format(expr)

@@ -17,6 +17,7 @@ class ExpressionKind(Enum):
     ONE_OF = "ONE_OF"
     OR = "OR"
     PREVIOUS_SIBLING = "PREVIOUS_SIBLING"
+    STARTS_WITH = "STARTS_WITH"
     STRING = "STRING"
     TEXT = "TEXT"
     THIS_NODE = "THIS_NODE"
@@ -243,6 +244,21 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.PREVIOUS_SIBLING, self.current, Literal(element_name))
+
+    def starts_with(self, expression):
+        """
+        Returns an expression representing whether the current expression starts with the given
+        expression.
+
+        Args:
+            expression (Expression | str): An expression with which the current expression should
+                begin.
+
+        Returns:
+            Expression: A new `Expression` representing whether the current starts with the given.
+        """
+
+        return Expression(ExpressionKind.STARTS_WITH, self.current, expression)
 
     @property
     def string(self):

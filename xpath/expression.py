@@ -12,6 +12,7 @@ class ExpressionKind(Enum):
     EQUALITY = "EQUALITY"
     INVERSE = "INVERSE"
     IS = "IS"
+    NODE_NAME = "NODE_NAME"
     NORMALIZED_SPACE = "NORMALIZED_SPACE"
     ONE_OF = "ONE_OF"
     OR = "OR"
@@ -188,6 +189,17 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.NORMALIZED_SPACE, self.current)
+
+    @property
+    def name(self):
+        """
+        Returns an expression that returns the name of the current node.
+
+        Returns:
+            Expression: A new `Expression` representing the name of the current node.
+        """
+
+        return Expression(ExpressionKind.NODE_NAME, self.current)
 
     def one_of(self, *values):
         """

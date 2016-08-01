@@ -16,6 +16,7 @@ class Renderer(object):
         ExpressionKind.EQUALITY: "_equality",
         ExpressionKind.INVERSE: "_inverse",
         ExpressionKind.IS: "_is",
+        ExpressionKind.NODE_NAME: "_node_name",
         ExpressionKind.NORMALIZED_SPACE: "_normalized_space",
         ExpressionKind.ONE_OF: "_one_of",
         ExpressionKind.OR: "_or",
@@ -96,6 +97,9 @@ class Renderer(object):
             return self._equality(expr1, expr2)
         else:
             return self._contains(expr1, expr2)
+
+    def _node_name(self, current):
+        return "name({0})".format(current)
 
     def _normalized_space(self, expr):
         return "normalize-space({0})".format(expr)

@@ -7,6 +7,7 @@ class Renderer(object):
     """A rendering context for converting an XPath `Expression` into a valid string query."""
 
     _RENDER_METHOD_NAMES = {
+        ExpressionKind.AND: "_and",
         ExpressionKind.ANYWHERE: "_anywhere",
         ExpressionKind.ATTR: "_attribute",
         ExpressionKind.CHILD: "_child",
@@ -59,6 +60,9 @@ class Renderer(object):
             return self._string_literal(argument)
         if isinstance(argument, Literal):
             return argument.value
+
+    def _and(self, expr1, expr2):
+        return "({0} and {1})".format(expr1, expr2)
 
     def _anywhere(self, node):
         return "//{0}".format(node)

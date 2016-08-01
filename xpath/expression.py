@@ -3,6 +3,7 @@ from xpath.literal import Literal
 
 
 class ExpressionKind(Enum):
+    AND = "AND"
     ANYWHERE = "ANYWHERE"
     ATTR = "ATTR"
     CHILD = "CHILD"
@@ -42,6 +43,9 @@ class Expression(object):
     def __add__(self, expression):
         return self.union(expression)
 
+    def __and__(self, expression):
+        return self.and_(expression)
+
     def __eq__(self, expression):
         return self.equals(expression)
 
@@ -53,6 +57,20 @@ class Expression(object):
 
     def __or__(self, expression):
         return self.or_(expression)
+
+    def and_(self, expression):
+        """
+        Returns an expression for the boolean-AND of this one and another.
+
+        Args:
+            expression (Expression): The right-hand side expression to be boolean-AND'd with this
+                one.
+
+        Returns:
+            Expression: A new `Expression` representing the boolean-AND of the two.
+        """
+
+        return Expression(ExpressionKind.AND, self.current, expression)
 
     def attr(self, attribute_name):
         """

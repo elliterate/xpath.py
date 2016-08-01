@@ -19,6 +19,7 @@ class ExpressionKind(Enum):
     PREVIOUS_SIBLING = "PREVIOUS_SIBLING"
     STARTS_WITH = "STARTS_WITH"
     STRING = "STRING"
+    SUBSTRING_FUNCTION = "SUBSTRING_FUNCTION"
     TEXT = "TEXT"
     THIS_NODE = "THIS_NODE"
     UNION = "UNION"
@@ -270,6 +271,28 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.STRING, self.current)
+
+    def substring(self, start, length=None):
+        """
+        Returns an expression representing a portion of the string contents of this one.
+
+        Args:
+            start (int): The starting index.
+            length (int, optional): The length of the substring. Default is None.
+
+        Returns:
+            Expression: A new `Expression` representing a portion of the string contents of this
+                one.
+        """
+
+        assert isinstance(start, int)
+        args = [start]
+
+        if length is not None:
+            assert isinstance(length, int)
+            args.append(length)
+
+        return Expression(ExpressionKind.SUBSTRING_FUNCTION, self.current, *args)
 
     @property
     def text(self):

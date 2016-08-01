@@ -23,6 +23,7 @@ class Renderer(object):
         ExpressionKind.PREVIOUS_SIBLING: "_previous_sibling",
         ExpressionKind.STARTS_WITH: "_starts_with",
         ExpressionKind.STRING: "_string_function",
+        ExpressionKind.SUBSTRING_FUNCTION: "_substring_function",
         ExpressionKind.TEXT: "_text",
         ExpressionKind.THIS_NODE: "_this_node",
         ExpressionKind.UNION: "_union",
@@ -59,6 +60,8 @@ class Renderer(object):
             return self.render(argument)
         if isinstance(argument, list):
             return [self._convert_argument(element) for element in argument]
+        if isinstance(argument, int):
+            return str(argument)
         if _is_string(argument):
             return self._string_literal(argument)
         if isinstance(argument, Literal):
@@ -134,6 +137,12 @@ class Renderer(object):
             return "concat(" + ",\"'\",".join(parts) + ")"
         else:
             return wrap(string)
+
+    def _substring_function(self, current, start, length=None):
+        args = [start]
+        if length is not None:
+            args.append(length)
+        return "substring({0}, {1})".format(current, ", ".join(args))
 
     def _text(self, current):
         return "{0}/text()".format(current)

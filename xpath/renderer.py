@@ -22,6 +22,7 @@ class Renderer(object):
         ExpressionKind.OR: "_or",
         ExpressionKind.PREVIOUS_SIBLING: "_previous_sibling",
         ExpressionKind.STRING: "_string_function",
+        ExpressionKind.TEXT: "_text",
         ExpressionKind.THIS_NODE: "_this_node",
         ExpressionKind.UNION: "_union",
         ExpressionKind.WHERE: "_where",
@@ -129,6 +130,9 @@ class Renderer(object):
             return "concat(" + ",\"'\",".join(parts) + ")"
         else:
             return wrap(string)
+
+    def _text(self, current):
+        return "{0}/text()".format(current)
 
     def _this_node(self):
         return "."

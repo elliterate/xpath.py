@@ -15,6 +15,7 @@ descendant = current.descendant
 name = current.name
 previous_sibling = current.previous_sibling
 string = current.string
+text = current.text
 
 
 def anywhere(element_name):

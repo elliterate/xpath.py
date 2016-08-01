@@ -18,6 +18,7 @@ class ExpressionKind(Enum):
     OR = "OR"
     PREVIOUS_SIBLING = "PREVIOUS_SIBLING"
     STRING = "STRING"
+    TEXT = "TEXT"
     THIS_NODE = "THIS_NODE"
     UNION = "UNION"
     WHERE = "WHERE"
@@ -253,6 +254,17 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.STRING, self.current)
+
+    @property
+    def text(self):
+        """
+        Returns an expression representing the text of this one.
+
+        Returns:
+            Expression: A new `Expression` representing the text of this one.
+        """
+
+        return Expression(ExpressionKind.TEXT, self.current)
 
     def union(self, expression):
         """

@@ -1,38 +1,47 @@
-# XPath
+XPath
+=====
 
 XPath is a Python DSL around a subset of XPath 1.0. Its primary purpose is to
 facilitate writing complex XPath queries from Python code.
 
-[![Build Status](https://secure.travis-ci.org/elliterate/xpath.py.svg?branch=master)](http://travis-ci.org/elliterate/xpath.py)
+|build|_
 
-## Generating expressions
+.. |build| image:: https://secure.travis-ci.org/elliterate/xpath.py.svg?branch=master
+.. _build: http://travis-ci.org/elliterate/xpath.py
 
-To create expressions, use the generators in [`xpath.dsl`](xpath/dsl.py):
+Generating expressions
+----------------------
 
-``` python
-from xpath.dsl import attr, descendant
-from xpath.renderer import to_xpath
+To create expressions, use the generators in |xpath.dsl|_::
 
-expression = descendant("ul")[attr("id") == "foo"]
-xpath = to_xpath(expression)
-```
+    from xpath.dsl import attr, descendant
+    from xpath.renderer import to_xpath
 
-## HTML
+    expression = descendant("ul")[attr("id") == "foo"]
+    xpath = to_xpath(expression)
+
+.. |xpath.dsl| replace:: ``xpath.dsl``
+.. _xpath.dsl: https://github.com/elliterate/xpath.py/blob/master/xpath/dsl.py
+
+HTML
+----
 
 XPath comes with a set of premade XPaths for use with HTML documents.
 
-You can generate these like this:
+You can generate these like this::
 
-``` python
-from xpath.html import button
-from xpath.renderer import to_xpath
+    from xpath.html import button
+    from xpath.renderer import to_xpath
 
-to_xpath(button("Save"), exact=True)
-```
+    to_xpath(button("Save"), exact=True)
 
-See [`xpath.html`](xpath/html.py) for all available matchers.
+See |xpath.html|_ for all available matchers.
 
-## License
+.. |xpath.html| replace:: ``xpath.html``
+.. _xpath.html: https://github.com/elliterate/xpath.py/blob/master/xpath/html.py
+
+License
+-------
 
 (The MIT License)
 

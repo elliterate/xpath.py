@@ -10,6 +10,7 @@ class Renderer(object):
         ExpressionKind.AND: "_and",
         ExpressionKind.ANYWHERE: "_anywhere",
         ExpressionKind.ATTR: "_attribute",
+        ExpressionKind.AXIS: "_axis",
         ExpressionKind.CHILD: "_child",
         ExpressionKind.CONTAINS: "_contains",
         ExpressionKind.DESCENDANT: "_descendant",
@@ -77,6 +78,9 @@ class Renderer(object):
 
     def _attribute(self, node, attribute_name):
         return "{0}/@{1}".format(node, attribute_name)
+
+    def _axis(self, parent, axis, element_name):
+        return "{0}/{1}::{2}".format(parent, axis, element_name)
 
     def _child(self, parent, element_name):
         return "{0}/{1}".format(parent, element_name)

@@ -6,6 +6,7 @@ class ExpressionKind(Enum):
     AND = "AND"
     ANYWHERE = "ANYWHERE"
     ATTR = "ATTR"
+    AXIS = "AXIS"
     CHILD = "CHILD"
     CONTAINS = "CONTAINS"
     DESCENDANT = "DESCENDANT"
@@ -91,6 +92,21 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.ATTR, self.current, Literal(attribute_name))
+
+    def axis(self, axis, element_name="*"):
+        """
+        Returns an expression matching nodes with a given relationship to this one.
+
+        Args:
+            axis (str): The relationship between the current node and the desired node.
+            element_name (str, optional): The element name of the desired node. Defaults to "*".
+
+        Returns:
+            Expression: A new `Expression` representing the nodes with the desired relationship
+                to this one.
+        """
+
+        return Expression(ExpressionKind.AXIS, self.current, Literal(axis), Literal(element_name))
 
     def child(self, expression):
         """

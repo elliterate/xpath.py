@@ -9,6 +9,7 @@ from xpath.literal import Literal
 current = Expression(ExpressionKind.THIS_NODE)
 
 attr = current.attr
+axis = current.axis
 child = current.child
 contains = current.contains
 descendant = current.descendant

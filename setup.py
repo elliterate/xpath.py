@@ -13,7 +13,7 @@ def read(filename):
 
 
 setup(
-    name="xpath",
+    name="xpath-py",
     version="0.0.1",
     description="Python library for generating XPath expressions",
     long_description=read("README.rst"),

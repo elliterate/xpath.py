@@ -19,6 +19,7 @@ class ExpressionKind(Enum):
     PREVIOUS_SIBLING = "PREVIOUS_SIBLING"
     STARTS_WITH = "STARTS_WITH"
     STRING = "STRING"
+    STRING_LENGTH_FUNCTION = "STRING_LENGTH_FUNCTION"
     SUBSTRING_FUNCTION = "SUBSTRING_FUNCTION"
     TEXT = "TEXT"
     THIS_NODE = "THIS_NODE"
@@ -146,7 +147,7 @@ class Expression(object):
         current expression) exactly match the given expression.
 
         Args:
-            expression (Expression): The test expression that should be exactly matched.
+            expression (Expression | int): The test expression that should be exactly matched.
 
         Returns:
             Expression: A new `Expression` representing whether any nodes matched.
@@ -271,6 +272,18 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.STRING, self.current)
+
+    @property
+    def string_length(self):
+        """
+        Returns an expression representing the length of the string contents of this one.
+
+        Returns:
+            Expression: A new `Expression` representing the length of the string contents of this
+                one.
+        """
+
+        return Expression(ExpressionKind.STRING_LENGTH_FUNCTION, self.current)
 
     def substring(self, start, length=None):
         """

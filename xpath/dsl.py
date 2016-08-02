@@ -16,6 +16,7 @@ name = current.name
 previous_sibling = current.previous_sibling
 starts_with = current.starts_with
 string = current.string
+string_length = current.string_length
 substring = current.substring
 text = current.text
 

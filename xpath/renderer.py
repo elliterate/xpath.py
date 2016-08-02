@@ -23,6 +23,7 @@ class Renderer(object):
         ExpressionKind.PREVIOUS_SIBLING: "_previous_sibling",
         ExpressionKind.STARTS_WITH: "_starts_with",
         ExpressionKind.STRING: "_string_function",
+        ExpressionKind.STRING_LENGTH_FUNCTION: "_string_length_function",
         ExpressionKind.SUBSTRING_FUNCTION: "_substring_function",
         ExpressionKind.TEXT: "_text",
         ExpressionKind.THIS_NODE: "_this_node",
@@ -123,6 +124,9 @@ class Renderer(object):
 
     def _string_function(self, expr):
         return "string({0})".format(expr)
+
+    def _string_length_function(self, current):
+        return "string-length({0})".format(current)
 
     def _string_literal(self, string):
         string = _ensure_string(string)

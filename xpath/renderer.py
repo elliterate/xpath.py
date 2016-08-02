@@ -1,3 +1,5 @@
+from cssselect import HTMLTranslator, parse
+from functools import partial
 import sys
 from xpath.expression import Expression, ExpressionKind
 from xpath.literal import Literal
@@ -13,6 +15,7 @@ class Renderer(object):
         ExpressionKind.AXIS: "_axis",
         ExpressionKind.CHILD: "_child",
         ExpressionKind.CONTAINS: "_contains",
+        ExpressionKind.CSS: "_css",
         ExpressionKind.DESCENDANT: "_descendant",
         ExpressionKind.EQUALITY: "_equality",
         ExpressionKind.INVERSE: "_inverse",
@@ -87,6 +90,15 @@ class Renderer(object):
 
     def _contains(self, expr, value):
         return "contains({0}, {1})".format(expr, value)
+
+    def _css(self, current, css_selector):
+        # The given CSS selector may be a group selector (multiple selectors
+        # delimited by commas), so we must parse out and convert the individual
+        # selectors, then return their union.
+        selectors = parse(css_selector)
+        xpath_selectors = ["{0}//{1}".format(current, _selector_to_xpath(selector))
+                           for selector in selectors]
+        return self._union(*xpath_selectors)
 
     def _descendant(self, parent, element_names):
         if len(element_names) == 1:
@@ -210,3 +222,6 @@ else:
 
     def _ensure_string(string):
         return string.encode("UTF-8") if isinstance(string, unicode) else string
+
+
+_selector_to_xpath = partial(HTMLTranslator().selector_to_xpath, prefix=None)

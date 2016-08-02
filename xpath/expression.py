@@ -9,6 +9,7 @@ class ExpressionKind(Enum):
     AXIS = "AXIS"
     CHILD = "CHILD"
     CONTAINS = "CONTAINS"
+    CSS = "CSS"
     DESCENDANT = "DESCENDANT"
     EQUALITY = "EQUALITY"
     INVERSE = "INVERSE"
@@ -139,6 +140,20 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.CONTAINS, self.current, expression)
+
+    def css(self, css_selector):
+        """
+        Returns an expression representing elements matching the given CSS selector relative to
+            the current expression.
+
+        Args:
+            css_selector (str): A CSS selector identifying the desired nodes.
+
+        Returns:
+            Expression: A new `Expression` representing any matched nodes.
+        """
+
+        return Expression(ExpressionKind.CSS, self.current, Literal(css_selector))
 
     def descendant(self, *expressions):
         """

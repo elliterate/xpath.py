@@ -126,8 +126,14 @@ class Renderer(object):
     def _or(self, *exprs):
         return "({0})".format(" or ".join(exprs))
 
-    def _previous_sibling(self, node, element_name):
-        return "{0}/preceding-sibling::*[1]/self::{1}".format(node, element_name)
+    def _previous_sibling(self, current, element_names):
+        if len(element_names) == 1:
+            return "{0}/preceding-sibling::*[1]/self::{1}".format(current, element_names[0])
+        elif len(element_names) > 1:
+            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
+            return "{0}/preceding-sibling::*[1]/self::*[{1}]".format(current, element_names_xpath)
+        else:
+            return "{0}/preceding-sibling::*[1]/self::*".format(current)
 
     def _starts_with(self, current, expr):
         return "starts-with({0}, {1})".format(current, expr)

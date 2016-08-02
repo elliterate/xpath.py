@@ -250,19 +250,21 @@ class Expression(object):
 
         return Expression(ExpressionKind.OR, self.current, expression)
 
-    def previous_sibling(self, element_name):
+    def previous_sibling(self, *element_names):
         """
-        Returns an expression representing the sibling immediately preceding the element represented
-        by the current expression.
+        Returns an expression representing the siblings immediately preceding the elements
+        represented by the current expression.
 
         Args:
-            element_name (str): The name of the sibling element.
+            *element_names (list(str)): A list of the names of sibling elements.
 
         Returns:
-            Expression: A new `Expression` representing the preceding sibling element.
+            Expression: A new `Expression` representing the preceding sibling elements.
         """
 
-        return Expression(ExpressionKind.PREVIOUS_SIBLING, self.current, Literal(element_name))
+        element_names = [Literal(name) for name in element_names]
+
+        return Expression(ExpressionKind.PREVIOUS_SIBLING, self.current, element_names)
 
     def starts_with(self, expression):
         """

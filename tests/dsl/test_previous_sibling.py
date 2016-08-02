@@ -14,10 +14,18 @@ class TestPreviousSibling(DSLTestCase):
         results = self.find_all(xpath)
         self.assertEqual(results[0].text, "Bax")
 
-        xpath = to_xpath(woo_div.previous_sibling("ul"))
+        xpath = to_xpath(woo_div.previous_sibling("ul", "p"))
+        results = self.find_all(xpath)
+        self.assertEqual(results[0].text, "Bax")
+
+        xpath = to_xpath(gorilla.previous_sibling("ul", "p"))
+        results = self.find_all(xpath)
+        self.assertEqual(results[0].text, "A list")
+
+        xpath = to_xpath(woo_div.previous_sibling("ul", "li"))
         results = self.find_all(xpath)
         self.assertSequenceEqual(results, [])
 
-        xpath = to_xpath(gorilla.previous_sibling("ul"))
+        xpath = to_xpath(woo_div.previous_sibling())
         results = self.find_all(xpath)
-        self.assertEqual(results[0].text, "A list")
+        self.assertEqual(results[0].text, "Bax")

@@ -12,6 +12,7 @@ class ExpressionKind(Enum):
     EQUALITY = "EQUALITY"
     INVERSE = "INVERSE"
     IS = "IS"
+    NEXT_SIBLING = "NEXT_SIBLING"
     NODE_NAME = "NODE_NAME"
     NORMALIZED_SPACE = "NORMALIZED_SPACE"
     ONE_OF = "ONE_OF"
@@ -204,6 +205,22 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.NODE_NAME, self.current)
+
+    def next_sibling(self, *element_names):
+        """
+        Returns an expression representing the siblings immediately following the elements
+        represented by the current expression.
+
+        Args:
+            *element_names (list(str)): A list of the names of sibling elements.
+
+        Returns:
+            Expression: A new `Expression` representing the following sibling elements.
+        """
+
+        element_names = [Literal(name) for name in element_names]
+
+        return Expression(ExpressionKind.NEXT_SIBLING, self.current, element_names)
 
     def one_of(self, *values):
         """

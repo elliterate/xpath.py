@@ -16,6 +16,7 @@ class Renderer(object):
         ExpressionKind.EQUALITY: "_equality",
         ExpressionKind.INVERSE: "_inverse",
         ExpressionKind.IS: "_is",
+        ExpressionKind.NEXT_SIBLING: "_next_sibling",
         ExpressionKind.NODE_NAME: "_node_name",
         ExpressionKind.NORMALIZED_SPACE: "_normalized_space",
         ExpressionKind.ONE_OF: "_one_of",
@@ -103,6 +104,15 @@ class Renderer(object):
             return self._equality(expr1, expr2)
         else:
             return self._contains(expr1, expr2)
+
+    def _next_sibling(self, current, element_names):
+        if len(element_names) == 1:
+            return "{0}/following-sibling::*[1]/self::{1}".format(current, element_names[0])
+        elif len(element_names) > 1:
+            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
+            return "{0}/following-sibling::*[1]/self::*[{1}]".format(current, element_names_xpath)
+        else:
+            return "{0}/following-sibling::*[1]/self::*".format(current)
 
     def _node_name(self, current):
         return "name({0})".format(current)

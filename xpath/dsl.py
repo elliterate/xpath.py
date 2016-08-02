@@ -13,6 +13,7 @@ child = current.child
 contains = current.contains
 descendant = current.descendant
 name = current.name
+next_sibling = current.next_sibling
 previous_sibling = current.previous_sibling
 starts_with = current.starts_with
 string = current.string

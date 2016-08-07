@@ -1,7 +1,7 @@
 from cssselect import HTMLTranslator, parse
 from functools import partial
 import sys
-from xpath.expression import Expression, ExpressionKind
+from xpath.expression import Expression, ExpressionKind, Union
 from xpath.literal import Literal
 
 
@@ -62,7 +62,7 @@ class Renderer(object):
         return render_method(*args)
 
     def _convert_argument(self, argument):
-        if isinstance(argument, Expression):
+        if isinstance(argument, (Expression, Union)):
             return self.render(argument)
         if isinstance(argument, list):
             return [self._convert_argument(element) for element in argument]

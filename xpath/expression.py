@@ -370,16 +370,16 @@ class Expression(object):
 
     def union(self, expression):
         """
-        Returns an expression for the union of this one and another.
+        Returns the union of this expression and another.
 
         Args:
             expression (Expression): The right-hand side expression to be united with this one.
 
         Returns:
-            Expression: A new `Expression` representing the union of the two.
+            Union: The union of this expression and the other.
         """
 
-        return Expression(ExpressionKind.UNION, self.current, expression)
+        return Union(self.current, expression)
 
     def where(self, expression):
         """
@@ -393,3 +393,49 @@ class Expression(object):
         """
 
         return Expression(ExpressionKind.WHERE, self.current, expression)
+
+
+class Union(object):
+    """A representation of the union of two expressions."""
+
+    def __init__(self, *expressions):
+        self.kind = ExpressionKind.UNION
+        self.expressions = expressions
+
+    @property
+    def arguments(self):
+        return self.expressions
+
+    def __add__(self, expression):
+        return self.union(expression)
+
+    def __getitem__(self, expression):
+        return self.where(expression)
+
+    def union(self, expression):
+        """
+        Returns the union of this expression and another.
+
+        Args:
+            expression (Expression): The right-hand side expression to be united with this one.
+
+        Returns:
+            Union: The union of this expression and the other.
+        """
+
+        return Union(self, expression)
+
+    def where(self, expression):
+        """
+        Returns a new union where each expression of this one has had the given predicate
+        expression applied.
+
+        Args:
+            expression (Expression): The predicate expression that should filter the expressions
+                in this union.
+
+        Returns:
+            Union: A new `Union` representing the filtered expressions.
+        """
+
+        return Union(*[expr.where(expression) for expr in self.expressions])

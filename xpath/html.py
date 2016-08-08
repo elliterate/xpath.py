@@ -190,6 +190,29 @@ def fillable_field(locator):
     return _locate_field(field_expr, locator)
 
 
+def frame(locator):
+    """
+    Returns an `Expression` for finding frames matching the given locator.
+
+    The query defines a frame as one of the following:
+    * a `frame` element
+    * an `iframe` element
+
+    The query will match frames that meet one of the following criteria:
+    * the element `id` exactly matches the locator
+    * the element `name` exactly matches the locator
+
+    Args:
+        locator (str): A string that identifies the desired frames.
+
+    Returns:
+        Expression: An `Expression` object matching the desired frames.
+    """
+
+    frames = descendant("frame") + descendant("iframe")
+    return frames[attr("id").equals(locator) | attr("name").equals(locator)]
+
+
 def link(locator):
     """
     Returns an `Expression` for finding links matching the given locator.

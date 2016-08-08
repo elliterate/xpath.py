@@ -9,12 +9,31 @@ if sys.version_info < (3, 4):
 
 
 def read(filename):
-    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+    """Returns the contents of the given package file."""
+
+    path = os.path.join(os.path.dirname(__file__), filename)
+
+    with open(path) as f:
+        return f.read()
+
+
+def get_version():
+    """Returns the package version."""
+
+    global_vars = {}
+
+    # Compile and execute the individual file to prevent
+    # the package from being automatically loaded.
+    source = read(os.path.join("xpath", "version.py"))
+    code = compile(source, "version.py", "exec")
+    exec(code, global_vars)
+
+    return global_vars['__version__']
 
 
 setup(
     name="xpath-py",
-    version="0.0.1",
+    version=get_version(),
     description="Python library for generating XPath expressions",
     long_description=read("README.rst"),
     url="https://github.com/elliterate/xpath.py",

@@ -80,6 +80,19 @@ class Expression(object):
 
         return Expression(ExpressionKind.AND, self.current, expression)
 
+    def anywhere(self, *element_names):
+        """
+        Returns an `Expression` matching nodes with the given element name anywhere in the document.
+
+        Args:
+            *element_names (*str, optional): The names of the elements to match.
+
+        Returns:
+            Expression: An `Expression` representing the matched elements.
+        """
+
+        return Expression(ExpressionKind.ANYWHERE, [Literal(element_name) for element_name in element_names])
+
     def attr(self, attribute_name):
         """
         Returns an expression matching the given attribute of the node represented by this

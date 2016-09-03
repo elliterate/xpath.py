@@ -8,6 +8,7 @@ from xpath.literal import Literal
 
 current = Expression(ExpressionKind.THIS_NODE)
 
+anywhere = current.anywhere
 attr = current.attr
 axis = current.axis
 child = current.child
@@ -22,17 +23,3 @@ string = current.string
 string_length = current.string_length
 substring = current.substring
 text = current.text
-
-
-def anywhere(element_name):
-    """
-    Returns an `Expression` matching nodes with the given element name anywhere in the document.
-
-    Args:
-        element_name (str): The name of the elements to match.
-
-    Returns:
-        Expression: An `Expression` representing the matched elements.
-    """
-
-    return Expression(ExpressionKind.ANYWHERE, Literal(element_name))

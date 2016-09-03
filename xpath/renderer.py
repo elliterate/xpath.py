@@ -76,8 +76,14 @@ class Renderer(object):
     def _and(self, expr1, expr2):
         return "({0} and {1})".format(expr1, expr2)
 
-    def _anywhere(self, node):
-        return "//{0}".format(node)
+    def _anywhere(self, element_names):
+        if len(element_names) == 1:
+            return "//{0}".format(element_names[0])
+        elif len(element_names) > 1:
+            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
+            return "//*[{0}]".format(element_names_xpath)
+        else:
+            return "//*"
 
     def _attribute(self, node, attribute_name):
         return "{0}/@{1}".format(node, attribute_name)

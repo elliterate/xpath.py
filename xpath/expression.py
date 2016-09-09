@@ -30,7 +30,11 @@ class ExpressionKind(Enum):
     WHERE = "WHERE"
 
 
-class Expression(object):
+class ExpressionType(object):
+    pass
+
+
+class Expression(ExpressionType):
     """A representation of an expression that can occur in an XPath query."""
 
     def __init__(self, kind, *args):
@@ -408,7 +412,7 @@ class Expression(object):
         return Expression(ExpressionKind.WHERE, self.current, expression)
 
 
-class Union(object):
+class Union(ExpressionType):
     """A representation of the union of two expressions."""
 
     def __init__(self, *expressions):

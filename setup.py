@@ -7,6 +7,8 @@ install_requires = ["cssselect"]
 if sys.version_info < (3, 4):
     install_requires.append("enum34")
 
+tests_require = ["lxml", "pytest"]
+
 
 def read(filename):
     """Returns the contents of the given package file."""
@@ -57,4 +59,7 @@ setup(
     packages=find_packages(exclude=["tests*"]),
     install_requires=install_requires,
     setup_requires=["pytest-runner"],
-    tests_require=["lxml", "pytest"])
+    tests_require=tests_require,
+    extras_require={
+        # Expose test dependencies for external scripts, like pip.
+        "test": tests_require})

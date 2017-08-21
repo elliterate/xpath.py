@@ -1,4 +1,5 @@
 import inspect
+from lxml import etree
 import os
 import pytest
 import unittest
@@ -17,15 +18,15 @@ class TestCase(unittest.TestCase):
     """str: The name of the HTML fixture file against which to run all XPath queries."""
 
     @pytest.fixture(autouse=True)
-    def setup_driver(self, driver):
-        self.driver = driver
-
+    def setup_document(self):
         # Determine the path of the fixture to load.
         filename = getattr(type(self), "__fixture__")
         fixture_path = os.path.join(_FIXTURE_DIR, filename)
 
+        parser = etree.HTMLParser(encoding="UTF-8")
+
         # Open the fixture file in the browser.
-        self.driver.get("file://{0}".format(fixture_path))
+        self.document = etree.parse(fixture_path, parser)
 
 
 class DSLTestCase(TestCase):
@@ -40,7 +41,7 @@ class DSLTestCase(TestCase):
             list(WebElement): A list of matching `WebElement` objects.
         """
 
-        return self.driver.find_elements_by_xpath(xpath)
+        return self.document.xpath(xpath)
 
 
 class HTMLTestCase(TestCase):
@@ -67,6 +68,6 @@ class HTMLTestCase(TestCase):
         # Find all matching elements.
         expression = matcher(locator)
         xpath = to_xpath(expression, exact=exact)
-        elements = self.driver.find_elements_by_xpath(xpath)
+        elements = self.document.xpath(xpath)
 
-        return elements[0].get_attribute("data") if len(elements) else None
+        return elements[0].get("data") if len(elements) else None

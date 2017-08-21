@@ -10,8 +10,8 @@ class TestText(DSLTestCase):
         xpath = to_xpath(descendant("p")[text == "Bax"])
         results = self.find_all(xpath)
         self.assertEqual(results[0].text, "Bax")
-        self.assertEqual(results[1].get_attribute("title"), "monkey")
+        self.assertEqual(results[1].get("title"), "monkey")
 
         xpath = to_xpath(descendant("div")[descendant("p").text == "Bax"])
         results = self.find_all(xpath)
-        self.assertEqual(results[0].get_attribute("title"), "fooDiv")
+        self.assertEqual(results[0].get("title"), "fooDiv")

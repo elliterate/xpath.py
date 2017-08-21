@@ -14,4 +14,4 @@ class TestAxis(DSLTestCase):
     def test_finds_nodes_given_the_xpath_axis_without_a_specific_tag(self):
         xpath = to_xpath(descendant("div")[attr("id").equals("foo")].axis("descendant"))
         results = self.find_all(xpath)
-        self.assertEqual(results[0].get_attribute("id"), "fooDiv")
+        self.assertEqual(results[0].get("id"), "fooDiv")

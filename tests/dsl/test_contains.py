@@ -9,10 +9,10 @@ class TestContains(DSLTestCase):
     def test_finds_nodes_that_contain_the_given_string(self):
         xpath = to_xpath(descendant("div")[attr("title").contains("ooD")])
         results = self.find_all(xpath)
-        self.assertEqual(results[0].get_attribute("id"), "foo")
+        self.assertEqual(results[0].get("id"), "foo")
 
     def test_finds_nodes_that_contain_the_given_expression(self):
         expr = anywhere("div")[attr("title").equals("fooDiv")].attr("id")
         xpath = to_xpath(descendant("div")[attr("title").contains(expr)])
         results = self.find_all(xpath)
-        self.assertEqual(results[0].get_attribute("id"), "foo")
+        self.assertEqual(results[0].get("id"), "foo")

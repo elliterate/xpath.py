@@ -9,9 +9,9 @@ class TestWhere(DSLTestCase):
     def test_limits_the_expression_to_find_only_certain_nodes(self):
         xpath = to_xpath(descendant("div").where(attr("id").equals("foo")))
         results = self.find_all(xpath)
-        self.assertEqual(results[0].get_attribute("title"), "fooDiv")
+        self.assertEqual(results[0].get("title"), "fooDiv")
 
     def test_aliased_as_square_brackets(self):
         xpath = to_xpath(descendant("div")[attr("id").equals("foo")])
         results = self.find_all(xpath)
-        self.assertEqual(results[0].get_attribute("title"), "fooDiv")
+        self.assertEqual(results[0].get("title"), "fooDiv")

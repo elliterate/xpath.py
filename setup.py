@@ -57,9 +57,4 @@ setup(
     packages=find_packages(exclude=["tests*"]),
     install_requires=install_requires,
     setup_requires=["pytest-runner"],
-    tests_require=[
-        "pytest",
-
-        # Prevent the use of Selenium 3 until it compiles.
-        # See: https://github.com/SeleniumHQ/selenium/pull/2539
-        "selenium < 3"])
+    tests_require=["lxml", "pytest"])

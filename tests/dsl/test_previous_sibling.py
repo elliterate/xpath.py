@@ -1,4 +1,5 @@
 from tests.case import DSLTestCase
+from tests.helpers import inner_text
 from xpath.dsl import attr, descendant
 from xpath.renderer import to_xpath
 
@@ -12,15 +13,15 @@ class TestPreviousSibling(DSLTestCase):
 
         xpath = to_xpath(woo_div.previous_sibling("p"))
         results = self.find_all(xpath)
-        self.assertEqual(results[0].text, "Bax")
+        self.assertEqual(inner_text(results[0]), "Bax")
 
         xpath = to_xpath(woo_div.previous_sibling("ul", "p"))
         results = self.find_all(xpath)
-        self.assertEqual(results[0].text, "Bax")
+        self.assertEqual(inner_text(results[0]), "Bax")
 
         xpath = to_xpath(gorilla.previous_sibling("ul", "p"))
         results = self.find_all(xpath)
-        self.assertEqual(results[0].text, "A list")
+        self.assertEqual(inner_text(results[0]), "A list")
 
         xpath = to_xpath(woo_div.previous_sibling("ul", "li"))
         results = self.find_all(xpath)
@@ -28,4 +29,4 @@ class TestPreviousSibling(DSLTestCase):
 
         xpath = to_xpath(woo_div.previous_sibling())
         results = self.find_all(xpath)
-        self.assertEqual(results[0].text, "Bax")
+        self.assertEqual(inner_text(results[0]), "Bax")

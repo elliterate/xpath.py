@@ -9,5 +9,5 @@ class TestOneOf(DSLTestCase):
     def test_matches_all_nodes_where_the_condition_matches(self):
         xpath = to_xpath(descendant("*")[attr("id").one_of("foo", "baz")])
         results = self.find_all(xpath)
-        self.assertEqual(results[0].get_attribute("title"), "fooDiv")
-        self.assertEqual(results[1].get_attribute("title"), "bazDiv")
+        self.assertEqual(results[0].get("title"), "fooDiv")
+        self.assertEqual(results[1].get("title"), "bazDiv")

@@ -21,6 +21,7 @@ class Renderer(object):
         ExpressionKind.CSS: "_css",
         ExpressionKind.DESCENDANT: "_descendant",
         ExpressionKind.EQUALITY: "_equality",
+        ExpressionKind.FUNCTION: "_function",
         ExpressionKind.INVERSE: "_inverse",
         ExpressionKind.IS: "_is",
         ExpressionKind.NEXT_SIBLING: "_next_sibling",
@@ -120,6 +121,9 @@ class Renderer(object):
 
     def _equality(self, expr1, expr2):
         return "{0} = {1}".format(expr1, expr2)
+
+    def _function(self, name, *arguments):
+        return "{0}({1})".format(name, ", ".join(arguments))
 
     def _inverse(self, expr):
         return "not({0})".format(expr)

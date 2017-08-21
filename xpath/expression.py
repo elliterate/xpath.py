@@ -12,6 +12,7 @@ class ExpressionKind(Enum):
     CSS = "CSS"
     DESCENDANT = "DESCENDANT"
     EQUALITY = "EQUALITY"
+    FUNCTION = "FUNCTION"
     INVERSE = "INVERSE"
     IS = "IS"
     NEXT_SIBLING = "NEXT_SIBLING"
@@ -189,6 +190,21 @@ class Expression(ExpressionType):
                        for expression in expressions]
 
         return Expression(ExpressionKind.DESCENDANT, self.current, expressions)
+
+    @staticmethod
+    def function(name, *arguments):
+        """
+        Returns an expression that represents the result of an XPath function call.
+
+        Args:
+            name (str): The name of the function to call.
+            *arguments: Variable length argument list for the XPath function.
+
+        Returns:
+            Expression: A new `Expression` representing the result of the function call.
+        """
+
+        return Expression(ExpressionKind.FUNCTION, Literal(name), *arguments)
 
     def equals(self, expression):
         """

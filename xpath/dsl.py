@@ -15,6 +15,7 @@ child = current.child
 contains = current.contains
 css = current.css
 descendant = current.descendant
+function = current.function
 name = current.name
 next_sibling = current.next_sibling
 previous_sibling = current.previous_sibling

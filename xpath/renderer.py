@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
+
 from cssselect import HTMLTranslator, parse
 from functools import partial
-import sys
+from xpath.compat import bytes_, str_
 from xpath.expression import ExpressionKind, ExpressionType
 from xpath.literal import Literal
+from xpath.utils import decode_bytes
 
 
 class Renderer(object):
@@ -68,7 +71,7 @@ class Renderer(object):
             return [self._convert_argument(element) for element in argument]
         if isinstance(argument, int):
             return str(argument)
-        if _is_string(argument):
+        if isinstance(argument, (bytes_, str_)):
             return self._string_literal(argument)
         if isinstance(argument, Literal):
             return argument.value
@@ -167,7 +170,7 @@ class Renderer(object):
         return "string-length({0})".format(current)
 
     def _string_literal(self, string):
-        string = _ensure_string(string)
+        string = decode_bytes(string)
 
         def wrap(s):
             return "'{0}'".format(s)
@@ -214,20 +217,6 @@ def to_xpath(node, exact=False):
     """
 
     return Renderer(exact=exact).render(node)
-
-
-if sys.version_info >= (3, 0):
-    def _is_string(argument):
-        return isinstance(argument, (str, bytes))
-
-    def _ensure_string(string):
-        return string.decode("UTF-8") if isinstance(string, bytes) else string
-else:
-    def _is_string(argument):
-        return isinstance(argument, (str, unicode))
-
-    def _ensure_string(string):
-        return string.encode("UTF-8") if isinstance(string, unicode) else string
 
 
 _selector_to_xpath = partial(HTMLTranslator().selector_to_xpath, prefix=None)

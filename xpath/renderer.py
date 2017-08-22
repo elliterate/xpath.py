@@ -21,8 +21,6 @@ class Renderer(object):
         ExpressionKind.DESCENDANT: "_descendant",
         ExpressionKind.FUNCTION: "_function",
         ExpressionKind.IS: "_is",
-        ExpressionKind.NEXT_SIBLING: "_next_sibling",
-        ExpressionKind.PREVIOUS_SIBLING: "_previous_sibling",
         ExpressionKind.TEXT: "_text",
         ExpressionKind.THIS_NODE: "_this_node",
         ExpressionKind.UNION: "_union",
@@ -78,8 +76,14 @@ class Renderer(object):
     def _attribute(self, node, attribute_name):
         return "{0}/@{1}".format(node, attribute_name)
 
-    def _axis(self, parent, axis, element_name):
-        return "{0}/{1}::{2}".format(parent, axis, element_name)
+    def _axis(self, current, name, element_names):
+        if len(element_names) == 1:
+            return "{0}/{1}::{2}".format(current, name, element_names[0])
+        elif len(element_names) > 1:
+            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
+            return "{0}/{1}::*[{2}]".format(current, name, element_names_xpath)
+        else:
+            return "{0}/{1}::*".format(current, name)
 
     def _binary_operator(self, name, left, right):
         return "({0} {1} {2})".format(left, name, right)
@@ -113,24 +117,6 @@ class Renderer(object):
             return self._binary_operator("=", expr1, expr2)
         else:
             return self._function("contains", expr1, expr2)
-
-    def _next_sibling(self, current, element_names):
-        if len(element_names) == 1:
-            return "{0}/following-sibling::*[1]/self::{1}".format(current, element_names[0])
-        elif len(element_names) > 1:
-            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
-            return "{0}/following-sibling::*[1]/self::*[{1}]".format(current, element_names_xpath)
-        else:
-            return "{0}/following-sibling::*[1]/self::*".format(current)
-
-    def _previous_sibling(self, current, element_names):
-        if len(element_names) == 1:
-            return "{0}/preceding-sibling::*[1]/self::{1}".format(current, element_names[0])
-        elif len(element_names) > 1:
-            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
-            return "{0}/preceding-sibling::*[1]/self::*[{1}]".format(current, element_names_xpath)
-        else:
-            return "{0}/preceding-sibling::*[1]/self::*".format(current)
 
     def _string_literal(self, string):
         string = decode_bytes(string)

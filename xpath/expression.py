@@ -14,8 +14,6 @@ class ExpressionKind(Enum):
     DESCENDANT = "DESCENDANT"
     FUNCTION = "FUNCTION"
     IS = "IS"
-    NEXT_SIBLING = "NEXT_SIBLING"
-    PREVIOUS_SIBLING = "PREVIOUS_SIBLING"
     TEXT = "TEXT"
     THIS_NODE = "THIS_NODE"
     UNION = "UNION"
@@ -103,20 +101,22 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.ATTR, self.current, Literal(attribute_name))
 
-    def axis(self, axis, element_name="*"):
+    def axis(self, axis, *element_names):
         """
         Returns an expression matching nodes with a given relationship to this one.
 
         Args:
-            axis (str): The relationship between the current node and the desired node.
-            element_name (str, optional): The element name of the desired node. Defaults to "*".
+            axis (str): The relationship between the current node and the desired nodes.
+            *element_names (*str): Variable length list of element names of the desired nodes.
 
         Returns:
             Expression: A new `Expression` representing the nodes with the desired relationship
                 to this one.
         """
 
-        return Expression(ExpressionKind.AXIS, self.current, Literal(axis), Literal(element_name))
+        element_names = [Literal(element_name) for element_name in element_names]
+
+        return Expression(ExpressionKind.AXIS, self.current, Literal(axis), element_names)
 
     def _binary_operator(self, operator, rhs):
         """
@@ -291,21 +291,19 @@ class Expression(ExpressionType):
 
         return self.method("name")
 
-    def next_sibling(self, *element_names):
+    def next_sibling(self, *expressions):
         """
         Returns an expression representing the siblings immediately following the elements
         represented by the current expression.
 
         Args:
-            *element_names (list(str)): A list of the names of sibling elements.
+            *expressions (list(str)): A list of expressions representing desired sibling elements.
 
         Returns:
             Expression: A new `Expression` representing the following sibling elements.
         """
 
-        element_names = [Literal(name) for name in element_names]
-
-        return Expression(ExpressionKind.NEXT_SIBLING, self.current, element_names)
+        return self.axis("following-sibling")[1].axis("self", *expressions)
 
     def one_of(self, *values):
         """
@@ -335,21 +333,19 @@ class Expression(ExpressionType):
 
         return self._binary_operator("or", expression)
 
-    def previous_sibling(self, *element_names):
+    def previous_sibling(self, *expressions):
         """
         Returns an expression representing the siblings immediately preceding the elements
         represented by the current expression.
 
         Args:
-            *element_names (list(str)): A list of the names of sibling elements.
+            *expressions (list(str)): A list of expressions representing desired sibling elements.
 
         Returns:
             Expression: A new `Expression` representing the preceding sibling elements.
         """
 
-        element_names = [Literal(name) for name in element_names]
-
-        return Expression(ExpressionKind.PREVIOUS_SIBLING, self.current, element_names)
+        return self.axis("preceding-sibling")[1].axis("self", *expressions)
 
     def starts_with(self, expression):
         """

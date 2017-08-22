@@ -133,23 +133,24 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.BINARY_OPERATOR, Literal(operator), self.current, rhs)
 
-    def child(self, expression):
+    def child(self, *expressions):
         """
         Returns an expression representing any children of the current node (represented by the
         current expression) that match the given expression or element name.
 
         Args:
-            expression: (Expression | str): An `Expression` or element name representing the
-                children to match.
+            *expression (*(Expression | str)): Variable length list of `Expression` objects or
+                element names representing the children to match.
 
         Returns:
             Expression: A new `Expression` representing the matched child nodes.
         """
 
-        if isinstance(expression, str):
-            expression = Literal(expression)
+        expressions = [
+            Literal(expression) if isinstance(expression, str) else expression
+            for expression in expressions]
 
-        return Expression(ExpressionKind.CHILD, self.current, expression)
+        return Expression(ExpressionKind.CHILD, self.current, expressions)
 
     def contains(self, expression):
         """

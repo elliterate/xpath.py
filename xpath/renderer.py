@@ -88,8 +88,14 @@ class Renderer(object):
     def _binary_operator(self, name, left, right):
         return "({0} {1} {2})".format(left, name, right)
 
-    def _child(self, parent, element_name):
-        return "{0}/{1}".format(parent, element_name)
+    def _child(self, parent, element_names):
+        if len(element_names) == 1:
+            return "{0}/{1}".format(parent, element_names[0])
+        elif len(element_names) > 1:
+            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
+            return "{0}/*[{1}]".format(parent, element_names_xpath)
+        else:
+            return "{0}/*".format(parent)
 
     def _css(self, current, css_selector):
         # The given CSS selector may be a group selector (multiple selectors

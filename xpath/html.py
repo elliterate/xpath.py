@@ -2,7 +2,7 @@
 A set of `Expression` generators for matching semantic HTML elements.
 """
 
-from xpath.dsl import anywhere, attr, child, descendant, previous_sibling, string
+from xpath import dsl as x
 
 
 def button(locator):
@@ -30,17 +30,17 @@ def button(locator):
         Expression: An `Expression` object matching the desired buttons.
     """
 
-    expr = descendant("button")[
-        attr("id").equals(locator) |
-        attr("value").is_(locator) |
-        attr("title").is_(locator) |
-        string.n.is_(locator)]
-    expr += descendant("input")[attr("type").one_of("submit", "reset", "image", "button")][
-        attr("id").equals(locator) |
-        attr("value").is_(locator) |
-        attr("title").is_(locator) |
-        string.n.is_(locator)]
-    expr += descendant("input")[attr("type").equals("image")][attr("alt").is_(locator)]
+    expr = x.descendant("button")[
+        x.attr("id").equals(locator) |
+        x.attr("value").is_(locator) |
+        x.attr("title").is_(locator) |
+        x.string.n.is_(locator)]
+    expr += x.descendant("input")[x.attr("type").one_of("submit", "reset", "image", "button")][
+        x.attr("id").equals(locator) |
+        x.attr("value").is_(locator) |
+        x.attr("title").is_(locator) |
+        x.string.n.is_(locator)]
+    expr += x.descendant("input")[x.attr("type").equals("image")][x.attr("alt").is_(locator)]
 
     return expr
 
@@ -63,7 +63,7 @@ def checkbox(locator):
         Expression: An `Expression` object matching the desired checkboxes.
     """
 
-    field_expr = descendant("input")[attr("type").equals("checkbox")]
+    field_expr = x.descendant("input")[x.attr("type").equals("checkbox")]
     return _locate_field(field_expr, locator)
 
 
@@ -82,9 +82,9 @@ def definition_description(locator):
         Expression: An `Expression` object matching the desired definition descriptions.
     """
 
-    expr = descendant("dd")[
-        attr("id").equals(locator) |
-        previous_sibling("dt")[string.n.equals(locator)]]
+    expr = x.descendant("dd")[
+        x.attr("id").equals(locator) |
+        x.previous_sibling("dt")[x.string.n.equals(locator)]]
 
     return expr
 
@@ -112,8 +112,8 @@ def field(locator):
         Expression: An `Expression` object matching the desired form fields.
     """
 
-    field_expr = descendant("input", "select", "textarea")[
-        ~attr("type").one_of("hidden", "image", "submit")]
+    field_expr = x.descendant("input", "select", "textarea")[
+        ~x.attr("type").one_of("hidden", "image", "submit")]
     return _locate_field(field_expr, locator)
 
 
@@ -132,9 +132,9 @@ def fieldset(locator):
         Expression: An `Expression` object matching the desired fieldsets.
     """
 
-    expr = descendant("fieldset")[
-        attr("id").equals(locator) |
-        child("legend")[string.n.is_(locator)]]
+    expr = x.descendant("fieldset")[
+        x.attr("id").equals(locator) |
+        x.child("legend")[x.string.n.is_(locator)]]
 
     return expr
 
@@ -157,7 +157,7 @@ def file_field(locator):
         Expression: An `Expression` object matching the desired file fields.
     """
 
-    field_expr = descendant("input")[attr("type").equals("file")]
+    field_expr = x.descendant("input")[x.attr("type").equals("file")]
     return _locate_field(field_expr, locator)
 
 
@@ -185,8 +185,8 @@ def fillable_field(locator):
         Expression: An `Expression` object matching the desired fillable fields.
     """
 
-    field_expr = descendant("input", "textarea")[
-        ~attr("type").one_of("checkbox", "file", "hidden", "image", "radio", "submit")]
+    field_expr = x.descendant("input", "textarea")[
+        ~x.attr("type").one_of("checkbox", "file", "hidden", "image", "radio", "submit")]
     return _locate_field(field_expr, locator)
 
 
@@ -209,8 +209,8 @@ def frame(locator):
         Expression: An `Expression` object matching the desired frames.
     """
 
-    frames = descendant("frame") + descendant("iframe")
-    return frames[attr("id").equals(locator) | attr("name").equals(locator)]
+    frames = x.descendant("frame") + x.descendant("iframe")
+    return frames[x.attr("id").equals(locator) | x.attr("name").equals(locator)]
 
 
 def link(locator):
@@ -231,11 +231,11 @@ def link(locator):
         Expression: An `Expression` object matching the desired links.
     """
 
-    expr = descendant("a")[attr("href")][
-        attr("id").equals(locator) |
-        attr("title").is_(locator) |
-        string.n.is_(locator) |
-        descendant("img")[attr("alt").is_(locator)]]
+    expr = x.descendant("a")[x.attr("href")][
+        x.attr("id").equals(locator) |
+        x.attr("title").is_(locator) |
+        x.string.n.is_(locator) |
+        x.descendant("img")[x.attr("alt").is_(locator)]]
 
     return expr
 
@@ -269,7 +269,7 @@ def optgroup(locator):
         Expression: An `Expression` object matching the desired option groups.
     """
 
-    expr = descendant("optgroup")[attr("label").is_(locator)]
+    expr = x.descendant("optgroup")[x.attr("label").is_(locator)]
     return expr
 
 
@@ -286,7 +286,7 @@ def option(locator):
         Expression: An `Expression` object matching the desired options.
     """
 
-    expr = descendant("option")[string.n.is_(locator)]
+    expr = x.descendant("option")[x.string.n.is_(locator)]
     return expr
 
 
@@ -308,7 +308,7 @@ def radio_button(locator):
         Expression: An `Expression` object matching the desired radio buttons.
     """
 
-    field_expr = descendant("input")[attr("type").equals("radio")]
+    field_expr = x.descendant("input")[x.attr("type").equals("radio")]
     return _locate_field(field_expr, locator)
 
 
@@ -330,7 +330,7 @@ def select(locator):
         Expression: An `Expression` object matching the desired selects.
     """
 
-    field_expr = descendant("select")
+    field_expr = x.descendant("select")
     return _locate_field(field_expr, locator)
 
 
@@ -349,19 +349,19 @@ def table(locator):
         Expression: An `Expression` object matching the desired tables.
     """
 
-    expr = descendant("table")[
-        attr("id").equals(locator) |
-        descendant("caption").is_(locator)]
+    expr = x.descendant("table")[
+        x.attr("id").equals(locator) |
+        x.descendant("caption").is_(locator)]
 
     return expr
 
 
 def _locate_field(field_expr, locator):
     expr = field_expr[
-        attr("id").equals(locator) |
-        attr("name").equals(locator) |
-        attr("placeholder").equals(locator) |
-        attr("id").equals(anywhere("label")[string.n.is_(locator)].attr("for"))]
-    expr += descendant("label")[string.n.is_(locator)].descendant(field_expr)
+        x.attr("id").equals(locator) |
+        x.attr("name").equals(locator) |
+        x.attr("placeholder").equals(locator) |
+        x.attr("id").equals(x.anywhere("label")[x.string.n.is_(locator)].attr("for"))]
+    expr += x.descendant("label")[x.string.n.is_(locator)].descendant(field_expr)
 
     return expr

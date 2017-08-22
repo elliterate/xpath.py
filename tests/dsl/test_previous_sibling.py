@@ -1,6 +1,6 @@
 from tests.case import DSLTestCase
 from tests.helpers import inner_text
-from xpath.dsl import attr, descendant
+from xpath import dsl as x
 from xpath.renderer import to_xpath
 
 
@@ -8,8 +8,8 @@ class TestPreviousSibling(DSLTestCase):
     __fixture__ = "simple.html"
 
     def test_finds_nodes_which_are_exactly_preceding_the_current_node(self):
-        woo_div = descendant("p")[attr("id").equals("wooDiv")]
-        gorilla = descendant("p")[attr("title").equals("gorilla")]
+        woo_div = x.descendant("p")[x.attr("id").equals("wooDiv")]
+        gorilla = x.descendant("p")[x.attr("title").equals("gorilla")]
 
         xpath = to_xpath(woo_div.previous_sibling("p"))
         results = self.find_all(xpath)

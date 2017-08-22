@@ -14,10 +14,10 @@ Generating expressions
 
 To create expressions, use the generators in |xpath.dsl|_::
 
-    from xpath.dsl import attr, descendant
+    from xpath import dsl as x
     from xpath.renderer import to_xpath
 
-    expression = descendant("ul")[attr("id") == "foo"]
+    expression = x.descendant("ul")[x.attr("id") == "foo"]
     xpath = to_xpath(expression)
 
 .. |xpath.dsl| replace:: ``xpath.dsl``

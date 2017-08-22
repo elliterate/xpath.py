@@ -51,14 +51,37 @@ class Expression(ExpressionType):
     def __eq__(self, expression):
         return self.equals(expression)
 
+    def __ge__(self, rhs):
+        return self.gte(rhs)
+
     def __getitem__(self, expression):
         return self.where(expression)
+
+    def __gt__(self, rhs):
+        return self.gt(rhs)
 
     def __invert__(self):
         return self.inverse
 
+    def __le__(self, rhs):
+        return self.lte(rhs)
+
+    def __lt__(self, rhs):
+        return self.lt(rhs)
+
+    def __mod__(self, rhs):
+        return self.mod(rhs)
+
+    def __mul__(self, rhs):
+        return self.multiply(rhs)
+
     def __or__(self, expression):
         return self.or_(expression)
+
+    def __truediv__(self, rhs):
+        return self.divide(rhs)
+
+    __div__ = __truediv__  # Python 2
 
     def and_(self, expression):
         """
@@ -209,6 +232,20 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.DESCENDANT, self.current, expressions)
 
+    def divide(self, rhs):
+        """
+        Returns an expression representing the "div" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the "div" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the "div" operation.
+        """
+
+        return self._binary_operator("div", rhs)
+
     @staticmethod
     def function(name, *arguments):
         """
@@ -237,6 +274,34 @@ class Expression(ExpressionType):
         """
 
         return self._binary_operator("=", expression)
+
+    def gt(self, rhs):
+        """
+        Returns an expression representing the ">" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the ">" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the ">" operation.
+        """
+
+        return self._binary_operator(">", rhs)
+
+    def gte(self, rhs):
+        """
+        Returns an expression representing the ">=" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the ">=" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the ">=" operation.
+        """
+
+        return self._binary_operator(">=", rhs)
 
     @property
     def inverse(self):
@@ -277,6 +342,34 @@ class Expression(ExpressionType):
 
         return cls.function("last")
 
+    def lt(self, rhs):
+        """
+        Returns an expression representing the "<" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the "<" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the "<" operation.
+        """
+
+        return self._binary_operator("<", rhs)
+
+    def lte(self, rhs):
+        """
+        Returns an expression representing the "<=" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the "<=" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the "<=" operation.
+        """
+
+        return self._binary_operator("<=", rhs)
+
     def method(self, name, *arguments):
         """
         Returns an expression that represents the result of an XPath function call with the current
@@ -291,6 +384,48 @@ class Expression(ExpressionType):
         """
 
         return Expression(ExpressionKind.FUNCTION, Literal(name), self, *arguments)
+
+    def minus(self, rhs):
+        """
+        Returns an expression representing the "-" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the "-" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the "-" operation.
+        """
+
+        return self._binary_operator("-", rhs)
+
+    def mod(self, rhs):
+        """
+        Returns an expression representing the "mod" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the "mod" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the "mod" operation.
+        """
+
+        return self._binary_operator("mod", rhs)
+
+    def multiply(self, rhs):
+        """
+        Returns an expression representing the "*" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the "*" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the "*" operation.
+        """
+
+        return self._binary_operator("*", rhs)
 
     @property
     def n(self):
@@ -355,6 +490,20 @@ class Expression(ExpressionType):
         """
 
         return self._binary_operator("or", expression)
+
+    def plus(self, rhs):
+        """
+        Returns an expression representing the "+" binary operation with the current node and
+        the given right-hand side expression.
+
+        Args:
+            rhs (Expression | int): The right-hand side expression of the "+" operation.
+
+        Returns:
+            Expression: A new `Expression` representing the "+" operation.
+        """
+
+        return self._binary_operator("+", rhs)
 
     @classmethod
     def position(cls):

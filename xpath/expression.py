@@ -166,6 +166,17 @@ class Expression(ExpressionType):
 
         return self.method("contains", expression)
 
+    @property
+    def count(self):
+        """
+        Returns an expression representing the number of occurrences.
+
+        Returns:
+            Expression: A new `Expression` representing the number of occurrences.
+        """
+
+        return self.method("count")
+
     def css(self, css_selector):
         """
         Returns an expression representing elements matching the given CSS selector relative to
@@ -255,6 +266,17 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.IS, self.current, expression)
 
+    @classmethod
+    def last(cls):
+        """
+        Returns an expression representing the number of elements in the context.
+
+        Returns:
+            Expression: A new `Expression` representing the number of elements in the context.
+        """
+
+        return cls.function("last")
+
     def method(self, name, *arguments):
         """
         Returns an expression that represents the result of an XPath function call with the current
@@ -333,6 +355,17 @@ class Expression(ExpressionType):
         """
 
         return self._binary_operator("or", expression)
+
+    @classmethod
+    def position(cls):
+        """
+        Returns an expression representing the position of elements in the context.
+
+        Returns:
+            Expression: A new `Expression` representing the position of elements.
+        """
+
+        return cls.function("position")
 
     def previous_sibling(self, *expressions):
         """

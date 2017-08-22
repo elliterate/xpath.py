@@ -68,31 +68,33 @@ class Renderer(object):
         return self._with_element_conditions("//", element_names)
 
     def _attribute(self, node, attribute_name):
-        return "{0}/@{1}".format(node, attribute_name)
+        return "{node}/@{attribute_name}".format(node=node, attribute_name=attribute_name)
 
     def _axis(self, current, name, element_names):
-        return self._with_element_conditions("{0}/{1}::".format(current, name), element_names)
+        return self._with_element_conditions(
+            "{current}/{axis}::".format(current=current, axis=name), element_names)
 
     def _binary_operator(self, name, left, right):
-        return "({0} {1} {2})".format(left, name, right)
+        return "({left} {operator} {right})".format(left=left, operator=name, right=right)
 
     def _child(self, parent, element_names):
-        return self._with_element_conditions("{0}/".format(parent), element_names)
+        return self._with_element_conditions("{parent}/".format(parent=parent), element_names)
 
     def _css(self, current, css_selector):
         # The given CSS selector may be a group selector (multiple selectors
         # delimited by commas), so we must parse out and convert the individual
         # selectors, then return their union.
         selectors = parse(css_selector)
-        xpath_selectors = ["{0}//{1}".format(current, _selector_to_xpath(selector))
+        xpath_selectors = ["{current}//{selector}".format(current=current,
+                                                          selector=_selector_to_xpath(selector))
                            for selector in selectors]
         return self._union(*xpath_selectors)
 
     def _descendant(self, parent, element_names):
-        return self._with_element_conditions("{0}//".format(parent), element_names)
+        return self._with_element_conditions("{parent}//".format(parent=parent), element_names)
 
     def _function(self, name, *arguments):
-        return "{0}({1})".format(name, ", ".join(arguments))
+        return "{function}({arguments})".format(function=name, arguments=", ".join(arguments))
 
     def _is(self, expr1, expr2):
         if self.exact:
@@ -104,7 +106,7 @@ class Renderer(object):
         string = decode_bytes(string)
 
         def wrap(s):
-            return "'{0}'".format(s)
+            return "'{}'".format(s)
 
         if "'" in string:
             parts = string.split("'")
@@ -115,7 +117,7 @@ class Renderer(object):
             return wrap(string)
 
     def _text(self, current):
-        return "{0}/text()".format(current)
+        return "{current}/text()".format(current=current)
 
     def _this_node(self):
         return "."
@@ -124,17 +126,23 @@ class Renderer(object):
         return " | ".join(exprs)
 
     def _where(self, expr, *predicate_exprs):
-        predicates = ["[{0}]".format(predicate_expr) for predicate_expr in predicate_exprs]
-        return "{0}{1}".format(expr, "".join(predicates))
+        predicates_xpath = ["[{predicate}]".format(predicate=predicate_expr)
+                      for predicate_expr in predicate_exprs]
+        return "{expression}{predicates}".format(
+            expression=expr, predicates="".join(predicates_xpath))
 
     def _with_element_conditions(self, expression, element_names):
         if len(element_names) == 1:
-            return "{0}{1}".format(expression, element_names[0])
+            return "{expression}{element_name}".format(expression=expression,
+                                                       element_name=element_names[0])
         elif len(element_names) > 1:
-            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
-            return "{0}*[{1}]".format(expression, element_names_xpath)
+            element_names_xpath = " | ".join(
+                ["self::{element_name}".format(element_name=element_name)
+                 for element_name in element_names])
+            return "{expression}*[{element_names}]".format(expression=expression,
+                                                           element_names=element_names_xpath)
         else:
-            return "{0}*".format(expression)
+            return "{expression}*".format(expression=expression)
 
 
 def to_xpath(node, exact=False):

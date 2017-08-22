@@ -65,37 +65,19 @@ class Renderer(object):
             return argument.value
 
     def _anywhere(self, element_names):
-        if len(element_names) == 1:
-            return "//{0}".format(element_names[0])
-        elif len(element_names) > 1:
-            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
-            return "//*[{0}]".format(element_names_xpath)
-        else:
-            return "//*"
+        return self._with_element_conditions("//", element_names)
 
     def _attribute(self, node, attribute_name):
         return "{0}/@{1}".format(node, attribute_name)
 
     def _axis(self, current, name, element_names):
-        if len(element_names) == 1:
-            return "{0}/{1}::{2}".format(current, name, element_names[0])
-        elif len(element_names) > 1:
-            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
-            return "{0}/{1}::*[{2}]".format(current, name, element_names_xpath)
-        else:
-            return "{0}/{1}::*".format(current, name)
+        return self._with_element_conditions("{0}/{1}::".format(current, name), element_names)
 
     def _binary_operator(self, name, left, right):
         return "({0} {1} {2})".format(left, name, right)
 
     def _child(self, parent, element_names):
-        if len(element_names) == 1:
-            return "{0}/{1}".format(parent, element_names[0])
-        elif len(element_names) > 1:
-            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
-            return "{0}/*[{1}]".format(parent, element_names_xpath)
-        else:
-            return "{0}/*".format(parent)
+        return self._with_element_conditions("{0}/".format(parent), element_names)
 
     def _css(self, current, css_selector):
         # The given CSS selector may be a group selector (multiple selectors
@@ -107,13 +89,7 @@ class Renderer(object):
         return self._union(*xpath_selectors)
 
     def _descendant(self, parent, element_names):
-        if len(element_names) == 1:
-            return "{0}//{1}".format(parent, element_names[0])
-        elif len(element_names) > 1:
-            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
-            return "{0}//*[{1}]".format(parent, element_names_xpath)
-        else:
-            return "{0}//*".format(parent)
+        return self._with_element_conditions("{0}//".format(parent), element_names)
 
     def _function(self, name, *arguments):
         return "{0}({1})".format(name, ", ".join(arguments))
@@ -150,6 +126,15 @@ class Renderer(object):
     def _where(self, expr, *predicate_exprs):
         predicates = ["[{0}]".format(predicate_expr) for predicate_expr in predicate_exprs]
         return "{0}{1}".format(expr, "".join(predicates))
+
+    def _with_element_conditions(self, expression, element_names):
+        if len(element_names) == 1:
+            return "{0}{1}".format(expression, element_names[0])
+        elif len(element_names) > 1:
+            element_names_xpath = " | ".join(["self::{0}".format(e) for e in element_names])
+            return "{0}*[{1}]".format(expression, element_names_xpath)
+        else:
+            return "{0}*".format(expression)
 
 
 def to_xpath(node, exact=False):

@@ -17,23 +17,15 @@ class Renderer(object):
         ExpressionKind.ATTR: "_attribute",
         ExpressionKind.AXIS: "_axis",
         ExpressionKind.CHILD: "_child",
-        ExpressionKind.CONTAINS: "_contains",
         ExpressionKind.CSS: "_css",
         ExpressionKind.DESCENDANT: "_descendant",
         ExpressionKind.EQUALITY: "_equality",
         ExpressionKind.FUNCTION: "_function",
-        ExpressionKind.INVERSE: "_inverse",
         ExpressionKind.IS: "_is",
         ExpressionKind.NEXT_SIBLING: "_next_sibling",
-        ExpressionKind.NODE_NAME: "_node_name",
-        ExpressionKind.NORMALIZED_SPACE: "_normalized_space",
         ExpressionKind.ONE_OF: "_one_of",
         ExpressionKind.OR: "_or",
         ExpressionKind.PREVIOUS_SIBLING: "_previous_sibling",
-        ExpressionKind.STARTS_WITH: "_starts_with",
-        ExpressionKind.STRING: "_string_function",
-        ExpressionKind.STRING_LENGTH_FUNCTION: "_string_length_function",
-        ExpressionKind.SUBSTRING_FUNCTION: "_substring_function",
         ExpressionKind.TEXT: "_text",
         ExpressionKind.THIS_NODE: "_this_node",
         ExpressionKind.UNION: "_union",
@@ -98,9 +90,6 @@ class Renderer(object):
     def _child(self, parent, element_name):
         return "{0}/{1}".format(parent, element_name)
 
-    def _contains(self, expr, value):
-        return "contains({0}, {1})".format(expr, value)
-
     def _css(self, current, css_selector):
         # The given CSS selector may be a group selector (multiple selectors
         # delimited by commas), so we must parse out and convert the individual
@@ -125,14 +114,11 @@ class Renderer(object):
     def _function(self, name, *arguments):
         return "{0}({1})".format(name, ", ".join(arguments))
 
-    def _inverse(self, expr):
-        return "not({0})".format(expr)
-
     def _is(self, expr1, expr2):
         if self.exact:
             return self._equality(expr1, expr2)
         else:
-            return self._contains(expr1, expr2)
+            return self._function("contains", expr1, expr2)
 
     def _next_sibling(self, current, element_names):
         if len(element_names) == 1:
@@ -142,12 +128,6 @@ class Renderer(object):
             return "{0}/following-sibling::*[1]/self::*[{1}]".format(current, element_names_xpath)
         else:
             return "{0}/following-sibling::*[1]/self::*".format(current)
-
-    def _node_name(self, current):
-        return "name({0})".format(current)
-
-    def _normalized_space(self, expr):
-        return "normalize-space({0})".format(expr)
 
     def _one_of(self, expr, *values):
         return " or ".join(["{0} = {1}".format(expr, value) for value in values])
@@ -164,15 +144,6 @@ class Renderer(object):
         else:
             return "{0}/preceding-sibling::*[1]/self::*".format(current)
 
-    def _starts_with(self, current, expr):
-        return "starts-with({0}, {1})".format(current, expr)
-
-    def _string_function(self, expr):
-        return "string({0})".format(expr)
-
-    def _string_length_function(self, current):
-        return "string-length({0})".format(current)
-
     def _string_literal(self, string):
         string = decode_bytes(string)
 
@@ -186,12 +157,6 @@ class Renderer(object):
             return "concat(" + ",\"'\",".join(parts) + ")"
         else:
             return wrap(string)
-
-    def _substring_function(self, current, start, length=None):
-        args = [start]
-        if length is not None:
-            args.append(length)
-        return "substring({0}, {1})".format(current, ", ".join(args))
 
     def _text(self, current):
         return "{0}/text()".format(current)

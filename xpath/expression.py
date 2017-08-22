@@ -8,23 +8,15 @@ class ExpressionKind(Enum):
     ATTR = "ATTR"
     AXIS = "AXIS"
     CHILD = "CHILD"
-    CONTAINS = "CONTAINS"
     CSS = "CSS"
     DESCENDANT = "DESCENDANT"
     EQUALITY = "EQUALITY"
     FUNCTION = "FUNCTION"
-    INVERSE = "INVERSE"
     IS = "IS"
     NEXT_SIBLING = "NEXT_SIBLING"
-    NODE_NAME = "NODE_NAME"
-    NORMALIZED_SPACE = "NORMALIZED_SPACE"
     ONE_OF = "ONE_OF"
     OR = "OR"
     PREVIOUS_SIBLING = "PREVIOUS_SIBLING"
-    STARTS_WITH = "STARTS_WITH"
-    STRING = "STRING"
-    STRING_LENGTH_FUNCTION = "STRING_LENGTH_FUNCTION"
-    SUBSTRING_FUNCTION = "SUBSTRING_FUNCTION"
     TEXT = "TEXT"
     THIS_NODE = "THIS_NODE"
     UNION = "UNION"
@@ -157,7 +149,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing whether any nodes matched.
         """
 
-        return Expression(ExpressionKind.CONTAINS, self.current, expression)
+        return self.method("contains", expression)
 
     def css(self, css_selector):
         """
@@ -229,7 +221,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing the inverse of this one.
         """
 
-        return Expression(ExpressionKind.INVERSE, self.current)
+        return self.method("not")
 
     def is_(self, expression):
         """
@@ -272,7 +264,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing the whitespace-normalized expression.
         """
 
-        return Expression(ExpressionKind.NORMALIZED_SPACE, self.current)
+        return self.method("normalize-space")
 
     @property
     def name(self):
@@ -283,7 +275,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing the name of the current node.
         """
 
-        return Expression(ExpressionKind.NODE_NAME, self.current)
+        return self.method("name")
 
     def next_sibling(self, *element_names):
         """
@@ -358,7 +350,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing whether the current starts with the given.
         """
 
-        return Expression(ExpressionKind.STARTS_WITH, self.current, expression)
+        return self.method("starts-with", expression)
 
     @property
     def string(self):
@@ -369,7 +361,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing the string contents of this one.
         """
 
-        return Expression(ExpressionKind.STRING, self.current)
+        return self.method("string")
 
     @property
     def string_length(self):
@@ -381,7 +373,7 @@ class Expression(ExpressionType):
                 one.
         """
 
-        return Expression(ExpressionKind.STRING_LENGTH_FUNCTION, self.current)
+        return self.method("string-length")
 
     def substring(self, start, length=None):
         """
@@ -403,7 +395,7 @@ class Expression(ExpressionType):
             assert isinstance(length, int)
             args.append(length)
 
-        return Expression(ExpressionKind.SUBSTRING_FUNCTION, self.current, *args)
+        return self.method("substring", *args)
 
     @property
     def text(self):

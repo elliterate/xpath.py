@@ -64,23 +64,29 @@ class Renderer(object):
         if isinstance(argument, Literal):
             return argument.value
 
-    def _anywhere(self, element_names):
-        return self._with_element_conditions("//", element_names)
+    @classmethod
+    def _anywhere(cls, element_names):
+        return cls._with_element_conditions("//", element_names)
 
-    def _attribute(self, node, attribute_name):
+    @staticmethod
+    def _attribute(node, attribute_name):
         return "{node}/@{attribute_name}".format(node=node, attribute_name=attribute_name)
 
-    def _axis(self, current, name, element_names):
-        return self._with_element_conditions(
+    @classmethod
+    def _axis(cls, current, name, element_names):
+        return cls._with_element_conditions(
             "{current}/{axis}::".format(current=current, axis=name), element_names)
 
-    def _binary_operator(self, name, left, right):
+    @staticmethod
+    def _binary_operator(name, left, right):
         return "({left} {operator} {right})".format(left=left, operator=name, right=right)
 
-    def _child(self, parent, element_names):
-        return self._with_element_conditions("{parent}/".format(parent=parent), element_names)
+    @classmethod
+    def _child(cls, parent, element_names):
+        return cls._with_element_conditions("{parent}/".format(parent=parent), element_names)
 
-    def _css(self, current, css_selector):
+    @classmethod
+    def _css(cls, current, css_selector):
         # The given CSS selector may be a group selector (multiple selectors
         # delimited by commas), so we must parse out and convert the individual
         # selectors, then return their union.
@@ -88,12 +94,14 @@ class Renderer(object):
         xpath_selectors = ["{current}//{selector}".format(current=current,
                                                           selector=_selector_to_xpath(selector))
                            for selector in selectors]
-        return self._union(*xpath_selectors)
+        return cls._union(*xpath_selectors)
 
-    def _descendant(self, parent, element_names):
-        return self._with_element_conditions("{parent}//".format(parent=parent), element_names)
+    @classmethod
+    def _descendant(cls, parent, element_names):
+        return cls._with_element_conditions("{parent}//".format(parent=parent), element_names)
 
-    def _function(self, name, *arguments):
+    @staticmethod
+    def _function(name, *arguments):
         return "{function}({arguments})".format(function=name, arguments=", ".join(arguments))
 
     def _is(self, expr1, expr2):
@@ -102,7 +110,8 @@ class Renderer(object):
         else:
             return self._function("contains", expr1, expr2)
 
-    def _string_literal(self, string):
+    @staticmethod
+    def _string_literal(string):
         string = decode_bytes(string)
 
         def wrap(s):
@@ -116,22 +125,27 @@ class Renderer(object):
         else:
             return wrap(string)
 
-    def _text(self, current):
+    @staticmethod
+    def _text(current):
         return "{current}/text()".format(current=current)
 
-    def _this_node(self):
+    @staticmethod
+    def _this_node():
         return "."
 
-    def _union(self, *exprs):
+    @staticmethod
+    def _union(*exprs):
         return " | ".join(exprs)
 
-    def _where(self, expr, *predicate_exprs):
+    @staticmethod
+    def _where(expr, *predicate_exprs):
         predicates_xpath = ["[{predicate}]".format(predicate=predicate_expr)
                       for predicate_expr in predicate_exprs]
         return "{expression}{predicates}".format(
             expression=expr, predicates="".join(predicates_xpath))
 
-    def _with_element_conditions(self, expression, element_names):
+    @staticmethod
+    def _with_element_conditions(expression, element_names):
         if len(element_names) == 1:
             return "{expression}{element_name}".format(expression=expression,
                                                        element_name=element_names[0])

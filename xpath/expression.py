@@ -1,21 +1,20 @@
 from enum import Enum
+from functools import reduce
+
 from xpath.literal import Literal
 
 
 class ExpressionKind(Enum):
-    AND = "AND"
     ANYWHERE = "ANYWHERE"
     ATTR = "ATTR"
     AXIS = "AXIS"
+    BINARY_OPERATOR = "BINARY_OPERATOR"
     CHILD = "CHILD"
     CSS = "CSS"
     DESCENDANT = "DESCENDANT"
-    EQUALITY = "EQUALITY"
     FUNCTION = "FUNCTION"
     IS = "IS"
     NEXT_SIBLING = "NEXT_SIBLING"
-    ONE_OF = "ONE_OF"
-    OR = "OR"
     PREVIOUS_SIBLING = "PREVIOUS_SIBLING"
     TEXT = "TEXT"
     THIS_NODE = "THIS_NODE"
@@ -75,7 +74,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing the boolean-AND of the two.
         """
 
-        return Expression(ExpressionKind.AND, self.current, expression)
+        return self._binary_operator("and", expression)
 
     def anywhere(self, *element_names):
         """
@@ -118,6 +117,21 @@ class Expression(ExpressionType):
         """
 
         return Expression(ExpressionKind.AXIS, self.current, Literal(axis), Literal(element_name))
+
+    def _binary_operator(self, operator, rhs):
+        """
+        Returns an expression representing a binary operation between the current node and a
+        given right-hand side expression.
+
+        Args:
+            operator (str): The binary operator to use.
+            rhs (Expression | int | str): The right-hand side expression of the operation.
+
+        Returns:
+            Expression: A new `Expression` representing the binary operation.
+        """
+
+        return Expression(ExpressionKind.BINARY_OPERATOR, Literal(operator), self.current, rhs)
 
     def child(self, expression):
         """
@@ -210,7 +224,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing whether any nodes matched.
         """
 
-        return Expression(ExpressionKind.EQUALITY, self.current, expression)
+        return self._binary_operator("=", expression)
 
     @property
     def inverse(self):
@@ -305,7 +319,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing whether any of the values matched.
         """
 
-        return Expression(ExpressionKind.ONE_OF, self.current, *values)
+        return reduce(lambda a, b: a.or_(b), map(self.equals, values))
 
     def or_(self, expression):
         """
@@ -319,7 +333,7 @@ class Expression(ExpressionType):
             Expression: A new `Expression` representing the boolean-OR of the two.
         """
 
-        return Expression(ExpressionKind.OR, self.current, expression)
+        return self._binary_operator("or", expression)
 
     def previous_sibling(self, *element_names):
         """

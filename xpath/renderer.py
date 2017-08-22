@@ -12,19 +12,16 @@ class Renderer(object):
     """A rendering context for converting an XPath `Expression` into a valid string query."""
 
     _RENDER_METHOD_NAMES = {
-        ExpressionKind.AND: "_and",
         ExpressionKind.ANYWHERE: "_anywhere",
         ExpressionKind.ATTR: "_attribute",
         ExpressionKind.AXIS: "_axis",
+        ExpressionKind.BINARY_OPERATOR: "_binary_operator",
         ExpressionKind.CHILD: "_child",
         ExpressionKind.CSS: "_css",
         ExpressionKind.DESCENDANT: "_descendant",
-        ExpressionKind.EQUALITY: "_equality",
         ExpressionKind.FUNCTION: "_function",
         ExpressionKind.IS: "_is",
         ExpressionKind.NEXT_SIBLING: "_next_sibling",
-        ExpressionKind.ONE_OF: "_one_of",
-        ExpressionKind.OR: "_or",
         ExpressionKind.PREVIOUS_SIBLING: "_previous_sibling",
         ExpressionKind.TEXT: "_text",
         ExpressionKind.THIS_NODE: "_this_node",
@@ -69,9 +66,6 @@ class Renderer(object):
         if isinstance(argument, Literal):
             return argument.value
 
-    def _and(self, expr1, expr2):
-        return "({0} and {1})".format(expr1, expr2)
-
     def _anywhere(self, element_names):
         if len(element_names) == 1:
             return "//{0}".format(element_names[0])
@@ -86,6 +80,9 @@ class Renderer(object):
 
     def _axis(self, parent, axis, element_name):
         return "{0}/{1}::{2}".format(parent, axis, element_name)
+
+    def _binary_operator(self, name, left, right):
+        return "({0} {1} {2})".format(left, name, right)
 
     def _child(self, parent, element_name):
         return "{0}/{1}".format(parent, element_name)
@@ -108,15 +105,12 @@ class Renderer(object):
         else:
             return "{0}//*".format(parent)
 
-    def _equality(self, expr1, expr2):
-        return "{0} = {1}".format(expr1, expr2)
-
     def _function(self, name, *arguments):
         return "{0}({1})".format(name, ", ".join(arguments))
 
     def _is(self, expr1, expr2):
         if self.exact:
-            return self._equality(expr1, expr2)
+            return self._binary_operator("=", expr1, expr2)
         else:
             return self._function("contains", expr1, expr2)
 
@@ -128,12 +122,6 @@ class Renderer(object):
             return "{0}/following-sibling::*[1]/self::*[{1}]".format(current, element_names_xpath)
         else:
             return "{0}/following-sibling::*[1]/self::*".format(current)
-
-    def _one_of(self, expr, *values):
-        return " or ".join(["{0} = {1}".format(expr, value) for value in values])
-
-    def _or(self, *exprs):
-        return "({0})".format(" or ".join(exprs))
 
     def _previous_sibling(self, current, element_names):
         if len(element_names) == 1:

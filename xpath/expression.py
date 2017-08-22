@@ -248,6 +248,21 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.IS, self.current, expression)
 
+    def method(self, name, *arguments):
+        """
+        Returns an expression that represents the result of an XPath function call with the current
+        node as the first argument.
+
+        Args:
+            name (str): The name of the function to call.
+            *arguments: Variable length argument list for the XPath function.
+
+        Returns:
+            Expression: A new `Expression` representing the result of the function call.
+        """
+
+        return Expression(ExpressionKind.FUNCTION, Literal(name), self, *arguments)
+
     @property
     def n(self):
         """

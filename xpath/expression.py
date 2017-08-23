@@ -83,6 +83,19 @@ class Expression(ExpressionType):
 
     __div__ = __truediv__  # Python 2
 
+    def ancestor(self, *element_names):
+        """
+        Returns an expression matching nodes that are ancestors of this one.
+
+        Args:
+            *element_names (*str, optional): The names of the elements to match.
+
+        Returns:
+            Expression: A new :class:`Expression` representing the ancestors of this one.
+        """
+
+        return self.axis("ancestor", *element_names)
+
     def and_(self, expression):
         """
         Returns an expression for the boolean-AND of this one and another.

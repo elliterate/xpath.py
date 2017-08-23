@@ -8,6 +8,7 @@ from xpath.literal import Literal
 
 current = Expression(ExpressionKind.THIS_NODE)
 
+ancestor = current.ancestor
 anywhere = current.anywhere
 attr = current.attr
 axis = current.axis

@@ -1,5 +1,5 @@
 """
-A set of `Expression` generators relative to the current expression context, i.e., `.`.
+A set of :class:`Expression` generators relative to the current expression context, i.e., ``.``.
 """
 
 from xpath.expression import Expression, ExpressionKind

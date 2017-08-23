@@ -9,7 +9,7 @@ from xpath.utils import decode_bytes
 
 
 class Renderer(object):
-    """A rendering context for converting an XPath `Expression` into a valid string query."""
+    """A rendering context for converting an XPath :class:`Expression` into a valid string query."""
 
     _RENDER_METHOD_NAMES = {
         ExpressionKind.ANYWHERE: "_anywhere",
@@ -38,13 +38,13 @@ class Renderer(object):
 
     def render(self, node):
         """
-        Converts a given XPath `Expression` into a corresponding string query.
+        Converts a given XPath :class:`Expression` into a corresponding string query.
 
         Args:
-            node (Expression): An XPath `Expression` to convert.
+            node (Expression): An XPath :class:`Expression` to convert.
 
         Returns:
-            str: A valid XPath query corresponding to the given `Expression`.
+            str: A valid XPath query corresponding to the given :class:`Expression`.
         """
 
         args = [self._convert_argument(arg) for arg in node.arguments]
@@ -161,15 +161,15 @@ class Renderer(object):
 
 def to_xpath(node, exact=False):
     """
-    Converts a given XPath `Expression` into a corresponding string query.
+    Converts a given XPath :class:`Expression` into a corresponding string query.
 
     Args:
-        node (Expression): An XPath `Expression` to convert.
+        node (Expression): An XPath :class:`Expression` to convert.
         exact (bool, optional): Whether the generated query should perform exact or approximate
             locator matches. Defaults to False.
 
     Returns:
-        str: A valid XPath query corresponding to the given `Expression`.
+        str: A valid XPath query corresponding to the given :class:`Expression`.
     """
 
     return Renderer(exact=exact).render(node)

@@ -38,7 +38,7 @@ class DSLTestCase(TestCase):
             xpath (str): An XPath query to match.
 
         Returns:
-            List[lxml.etree.Element]: A list of matching `lxml.etree.Element` objects.
+            List[lxml.etree.Element]: A list of matching :class:`lxml.etree.Element` objects.
         """
 
         return self.document.xpath(xpath)
@@ -48,20 +48,20 @@ class HTMLTestCase(TestCase):
     """A base test case for testing HTML matchers."""
 
     __matcher__ = None
-    """str: The name of the matcher in the `xpath.html` module to use for locating elements."""
+    """str: The name of the matcher in the :mod:`xpath.html` module to use for locating elements."""
 
     def get(self, locator, exact=False):
         """
-        Returns the `data` attribute of the first element matching the locator, if any.
+        Returns the ``data`` attribute of the first element matching the locator, if any.
 
         Args:
             locator (str): A string that identifies the desired element.
 
         Returns:
-            str | None: The `data` attribute of the first matching element, if any.
+            str | None: The ``data`` attribute of the first matching element, if any.
         """
 
-        # Determine the `xpath.html` matcher.
+        # Determine the :mod:`xpath.html` matcher.
         matcher_name = getattr(type(self), "__matcher__")
         matcher = getattr(html, matcher_name)
 

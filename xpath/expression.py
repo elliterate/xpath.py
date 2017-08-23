@@ -92,20 +92,21 @@ class Expression(ExpressionType):
                 one.
 
         Returns:
-            Expression: A new `Expression` representing the boolean-AND of the two.
+            Expression: A new :class:`Expression` representing the boolean-AND of the two.
         """
 
         return self._binary_operator("and", expression)
 
     def anywhere(self, *element_names):
         """
-        Returns an `Expression` matching nodes with the given element name anywhere in the document.
+        Returns an :class:`Expression` matching nodes with the given element name anywhere in the
+        document.
 
         Args:
             *element_names (*str, optional): The names of the elements to match.
 
         Returns:
-            Expression: An `Expression` representing the matched elements.
+            Expression: An :class:`Expression` representing the matched elements.
         """
 
         return Expression(ExpressionKind.ANYWHERE, [Literal(element_name) for element_name in element_names])
@@ -119,7 +120,7 @@ class Expression(ExpressionType):
             attribute_name: The name of the attribute to match.
 
         Returns:
-            Expression: A new `Expression` representing the desired attribute.
+            Expression: A new :class:`Expression` representing the desired attribute.
         """
 
         return Expression(ExpressionKind.ATTR, self.current, Literal(attribute_name))
@@ -133,8 +134,8 @@ class Expression(ExpressionType):
             *element_names (*str): Variable length list of element names of the desired nodes.
 
         Returns:
-            Expression: A new `Expression` representing the nodes with the desired relationship
-                to this one.
+            Expression: A new :class:`Expression` representing the nodes with the desired
+                relationship to this one.
         """
 
         element_names = [Literal(element_name) for element_name in element_names]
@@ -151,7 +152,7 @@ class Expression(ExpressionType):
             rhs (Expression | int | str): The right-hand side expression of the operation.
 
         Returns:
-            Expression: A new `Expression` representing the binary operation.
+            Expression: A new :class:`Expression` representing the binary operation.
         """
 
         return Expression(ExpressionKind.BINARY_OPERATOR, Literal(operator), self.current, rhs)
@@ -162,11 +163,11 @@ class Expression(ExpressionType):
         current expression) that match the given expression or element name.
 
         Args:
-            *expression (*(Expression | str)): Variable length list of `Expression` objects or
-                element names representing the children to match.
+            *expression (*(Expression | str)): Variable length list of :class:`Expression` objects
+                or element names representing the children to match.
 
         Returns:
-            Expression: A new `Expression` representing the matched child nodes.
+            Expression: A new :class:`Expression` representing the matched child nodes.
         """
 
         expressions = [
@@ -184,7 +185,7 @@ class Expression(ExpressionType):
             expression (Expression): The test expression that should be approximately matched.
 
         Returns:
-            Expression: A new `Expression` representing whether any nodes matched.
+            Expression: A new :class:`Expression` representing whether any nodes matched.
         """
 
         return self.method("contains", expression)
@@ -195,7 +196,7 @@ class Expression(ExpressionType):
         Returns an expression representing the number of occurrences.
 
         Returns:
-            Expression: A new `Expression` representing the number of occurrences.
+            Expression: A new :class:`Expression` representing the number of occurrences.
         """
 
         return self.method("count")
@@ -209,7 +210,7 @@ class Expression(ExpressionType):
             css_selector (str): A CSS selector identifying the desired nodes.
 
         Returns:
-            Expression: A new `Expression` representing any matched nodes.
+            Expression: A new :class:`Expression` representing any matched nodes.
         """
 
         return Expression(ExpressionKind.CSS, self.current, Literal(css_selector))
@@ -220,11 +221,11 @@ class Expression(ExpressionType):
         current expression) that match the given expressions or element names.
 
         Args:
-            *expressions (List[Expression | str]): A list of `Expression` objects or element names
-                representing the descendants to match.
+            *expressions (List[Expression | str]): A list of :class:`Expression` objects or element
+                names representing the descendants to match.
 
         Returns:
-            Expression: A new `Expression` representing the matched descendant nodes.
+            Expression: A new :class:`Expression` representing the matched descendant nodes.
         """
 
         expressions = [Literal(expression) if isinstance(expression, str) else expression
@@ -241,7 +242,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the "div" operation.
 
         Returns:
-            Expression: A new `Expression` representing the "div" operation.
+            Expression: A new :class:`Expression` representing the "div" operation.
         """
 
         return self._binary_operator("div", rhs)
@@ -256,7 +257,7 @@ class Expression(ExpressionType):
             *arguments: Variable length argument list for the XPath function.
 
         Returns:
-            Expression: A new `Expression` representing the result of the function call.
+            Expression: A new :class:`Expression` representing the result of the function call.
         """
 
         return Expression(ExpressionKind.FUNCTION, Literal(name), *arguments)
@@ -270,7 +271,7 @@ class Expression(ExpressionType):
             expression (Expression | int): The test expression that should be exactly matched.
 
         Returns:
-            Expression: A new `Expression` representing whether any nodes matched.
+            Expression: A new :class:`Expression` representing whether any nodes matched.
         """
 
         return self._binary_operator("=", expression)
@@ -284,7 +285,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the ">" operation.
 
         Returns:
-            Expression: A new `Expression` representing the ">" operation.
+            Expression: A new :class:`Expression` representing the ">" operation.
         """
 
         return self._binary_operator(">", rhs)
@@ -298,7 +299,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the ">=" operation.
 
         Returns:
-            Expression: A new `Expression` representing the ">=" operation.
+            Expression: A new :class:`Expression` representing the ">=" operation.
         """
 
         return self._binary_operator(">=", rhs)
@@ -309,7 +310,7 @@ class Expression(ExpressionType):
         Returns an expression that represents the inverse of this one.
 
         Returns:
-            Expression: A new `Expression` representing the inverse of this one.
+            Expression: A new :class:`Expression` representing the inverse of this one.
         """
 
         return self.method("not")
@@ -320,13 +321,13 @@ class Expression(ExpressionType):
         current expression) match the given expression.
 
         Matching will be either approximate or exact, depending on the configuration of the
-        `Renderer` evaluating the returned expression.
+        :class:`Renderer` evaluating the returned expression.
 
         Args:
             expression (Expression): The test expression that should be matched.
 
         Returns:
-            Expression: A new `Expression` representing whether any nodes matched.
+            Expression: A new :class:`Expression` representing whether any nodes matched.
         """
 
         return Expression(ExpressionKind.IS, self.current, expression)
@@ -337,7 +338,8 @@ class Expression(ExpressionType):
         Returns an expression representing the number of elements in the context.
 
         Returns:
-            Expression: A new `Expression` representing the number of elements in the context.
+            Expression: A new :class:`Expression` representing the number of elements in the
+                context.
         """
 
         return cls.function("last")
@@ -351,7 +353,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the "<" operation.
 
         Returns:
-            Expression: A new `Expression` representing the "<" operation.
+            Expression: A new :class:`Expression` representing the "<" operation.
         """
 
         return self._binary_operator("<", rhs)
@@ -365,7 +367,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the "<=" operation.
 
         Returns:
-            Expression: A new `Expression` representing the "<=" operation.
+            Expression: A new :class:`Expression` representing the "<=" operation.
         """
 
         return self._binary_operator("<=", rhs)
@@ -380,7 +382,7 @@ class Expression(ExpressionType):
             *arguments: Variable length argument list for the XPath function.
 
         Returns:
-            Expression: A new `Expression` representing the result of the function call.
+            Expression: A new :class:`Expression` representing the result of the function call.
         """
 
         return Expression(ExpressionKind.FUNCTION, Literal(name), self, *arguments)
@@ -394,7 +396,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the "-" operation.
 
         Returns:
-            Expression: A new `Expression` representing the "-" operation.
+            Expression: A new :class:`Expression` representing the "-" operation.
         """
 
         return self._binary_operator("-", rhs)
@@ -408,7 +410,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the "mod" operation.
 
         Returns:
-            Expression: A new `Expression` representing the "mod" operation.
+            Expression: A new :class:`Expression` representing the "mod" operation.
         """
 
         return self._binary_operator("mod", rhs)
@@ -422,7 +424,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the "*" operation.
 
         Returns:
-            Expression: A new `Expression` representing the "*" operation.
+            Expression: A new :class:`Expression` representing the "*" operation.
         """
 
         return self._binary_operator("*", rhs)
@@ -433,7 +435,7 @@ class Expression(ExpressionType):
         Returns an expression that normalizes the whitespace of this one.
 
         Returns:
-            Expression: A new `Expression` representing the whitespace-normalized expression.
+            Expression: A new :class:`Expression` representing the whitespace-normalized expression.
         """
 
         return self.method("normalize-space")
@@ -444,7 +446,7 @@ class Expression(ExpressionType):
         Returns an expression that returns the name of the current node.
 
         Returns:
-            Expression: A new `Expression` representing the name of the current node.
+            Expression: A new :class:`Expression` representing the name of the current node.
         """
 
         return self.method("name")
@@ -458,7 +460,7 @@ class Expression(ExpressionType):
             *expressions (List[str]): A list of expressions representing desired sibling elements.
 
         Returns:
-            Expression: A new `Expression` representing the following sibling elements.
+            Expression: A new :class:`Expression` representing the following sibling elements.
         """
 
         return self.axis("following-sibling")[1].axis("self", *expressions)
@@ -472,7 +474,7 @@ class Expression(ExpressionType):
             *values (List[str]): One or more values which the current expression may equal.
 
         Returns:
-            Expression: A new `Expression` representing whether any of the values matched.
+            Expression: A new :class:`Expression` representing whether any of the values matched.
         """
 
         return reduce(lambda a, b: a.or_(b), map(self.equals, values))
@@ -486,7 +488,7 @@ class Expression(ExpressionType):
                 one.
 
         Returns:
-            Expression: A new `Expression` representing the boolean-OR of the two.
+            Expression: A new :class:`Expression` representing the boolean-OR of the two.
         """
 
         return self._binary_operator("or", expression)
@@ -500,7 +502,7 @@ class Expression(ExpressionType):
             rhs (Expression | int): The right-hand side expression of the "+" operation.
 
         Returns:
-            Expression: A new `Expression` representing the "+" operation.
+            Expression: A new :class:`Expression` representing the "+" operation.
         """
 
         return self._binary_operator("+", rhs)
@@ -511,7 +513,7 @@ class Expression(ExpressionType):
         Returns an expression representing the position of elements in the context.
 
         Returns:
-            Expression: A new `Expression` representing the position of elements.
+            Expression: A new :class:`Expression` representing the position of elements.
         """
 
         return cls.function("position")
@@ -525,7 +527,7 @@ class Expression(ExpressionType):
             *expressions (List[str]): A list of expressions representing desired sibling elements.
 
         Returns:
-            Expression: A new `Expression` representing the preceding sibling elements.
+            Expression: A new :class:`Expression` representing the preceding sibling elements.
         """
 
         return self.axis("preceding-sibling")[1].axis("self", *expressions)
@@ -540,7 +542,8 @@ class Expression(ExpressionType):
                 begin.
 
         Returns:
-            Expression: A new `Expression` representing whether the current starts with the given.
+            Expression: A new :class:`Expression` representing whether the current starts with the
+                given.
         """
 
         return self.method("starts-with", expression)
@@ -551,7 +554,7 @@ class Expression(ExpressionType):
         Returns an expression representing the string contents of this one.
 
         Returns:
-            Expression: A new `Expression` representing the string contents of this one.
+            Expression: A new :class:`Expression` representing the string contents of this one.
         """
 
         return self.method("string")
@@ -562,8 +565,8 @@ class Expression(ExpressionType):
         Returns an expression representing the length of the string contents of this one.
 
         Returns:
-            Expression: A new `Expression` representing the length of the string contents of this
-                one.
+            Expression: A new :class:`Expression` representing the length of the string contents of
+                this one.
         """
 
         return self.method("string-length")
@@ -577,8 +580,8 @@ class Expression(ExpressionType):
             length (int, optional): The length of the substring. Default is None.
 
         Returns:
-            Expression: A new `Expression` representing a portion of the string contents of this
-                one.
+            Expression: A new :class:`Expression` representing a portion of the string contents of
+                this one.
         """
 
         assert isinstance(start, int)
@@ -596,7 +599,7 @@ class Expression(ExpressionType):
         Returns an expression representing the text of this one.
 
         Returns:
-            Expression: A new `Expression` representing the text of this one.
+            Expression: A new :class:`Expression` representing the text of this one.
         """
 
         return Expression(ExpressionKind.TEXT, self.current)
@@ -622,7 +625,7 @@ class Expression(ExpressionType):
             expression (Expression): The predicate expression that should filter this one.
 
         Returns:
-            Expression: A new `Expression` representing the filtered expression.
+            Expression: A new :class:`Expression` representing the filtered expression.
         """
 
         return Expression(ExpressionKind.WHERE, self.current, expression)
@@ -668,7 +671,7 @@ class Union(ExpressionType):
                 in this union.
 
         Returns:
-            Union: A new `Union` representing the filtered expressions.
+            Union: A new :class:`Union` representing the filtered expressions.
         """
 
         return Union(*[expr.where(expression) for expr in self.expressions])

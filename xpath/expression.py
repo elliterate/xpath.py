@@ -138,6 +138,8 @@ class Expression(AbstractExpression):
         return Expression(ExpressionType.ATTR, self.current, Literal(attribute_name))
 
     attribute = _create_axis("attribute")
+    boolean = _create_method("boolean")
+    ceiling = _create_method("ceiling")
 
     def axis(self, axis, *element_names):
         """
@@ -175,6 +177,7 @@ class Expression(AbstractExpression):
 
         return Expression(ExpressionType.CHILD, self.current, expressions)
 
+    concat = _create_method("concat")
     contains = _create_method("contains")
     count = property(_create_method("count"))
 
@@ -212,6 +215,8 @@ class Expression(AbstractExpression):
 
     descendant_or_self = _create_axis("descendant-or-self")
     divide = __truediv__ = __div__ = _create_operator("div")
+    false = _create_method("false")
+    floor = _create_method("floor")
     following = _create_axis("following")
     following_sibling = _create_axis("following-sibling")
     equals = __eq__ = _create_operator("=")
@@ -237,6 +242,8 @@ class Expression(AbstractExpression):
 
         return Expression(ExpressionType.IS, self.current, expression)
 
+    lang = _create_method("lang")
+    local_name = property(_create_method("local-name"))
     lt = __lt__ = _create_operator("<")
     lte = __le__ = _create_operator("<=")
 
@@ -261,6 +268,7 @@ class Expression(AbstractExpression):
     n = property(_create_method("normalize-space"))
     name = property(_create_method("name"))
     namespace = _create_axis("namespace")
+    namespace_uri = property(_create_method("namespace-uri"))
 
     def next_sibling(self, *expressions):
         """
@@ -275,6 +283,9 @@ class Expression(AbstractExpression):
         """
 
         return self.following_sibling()[1].self_axis(*expressions)
+
+    normalize_space = _create_method("normalize-space")
+    number = _create_method("number")
 
     def one_of(self, *values):
         """
@@ -310,11 +321,15 @@ class Expression(AbstractExpression):
 
         return self.preceding_sibling()[1].self_axis(*expressions)
 
+    round = _create_method("round")
     self_axis = _create_axis("self")
     starts_with = _create_method("starts-with")
     string = property(_create_method("string"))
     string_length = property(_create_method("string-length"))
     substring = _create_method("substring")
+    substring_after = _create_method("substring-after")
+    substring_before = _create_method("substring-before")
+    sum = _create_method("sum")
 
     @property
     def text(self):
@@ -326,6 +341,9 @@ class Expression(AbstractExpression):
         """
 
         return Expression(ExpressionType.TEXT, self.current)
+
+    translate = _create_method("translate")
+    true = _create_method("true")
 
     def union(self, expression):
         """

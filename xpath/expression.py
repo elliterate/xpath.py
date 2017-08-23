@@ -20,6 +20,28 @@ class ExpressionKind(Enum):
     WHERE = "WHERE"
 
 
+def _create_axis(name):
+    def func(self, *element_names):
+        element_names = [Literal(element_name) for element_name in element_names]
+
+        return Expression(ExpressionKind.AXIS, self.current, Literal(name), element_names)
+
+    func.__name__ = name
+    func.__doc__ = (
+        """
+        Returns an expression matching nodes related to this one via the "{axis}" axis.
+
+        Args:
+            *element_names (*str): Variable length list of element names of the desired nodes.
+
+        Returns:
+            Expression: A new :class:`Expression` representing the nodes related via the "{axis}"
+                axis.
+        """.format(axis=name))
+
+    return func
+
+
 def _create_method(name):
     def func(self, *arguments):
         return Expression(ExpressionKind.FUNCTION, Literal(name), self, *arguments)
@@ -83,19 +105,7 @@ class Expression(ExpressionType):
     def current(self):
         return self
 
-    def ancestor(self, *element_names):
-        """
-        Returns an expression matching nodes that are ancestors of this one.
-
-        Args:
-            *element_names (*str, optional): The names of the elements to match.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the ancestors of this one.
-        """
-
-        return self.axis("ancestor", *element_names)
-
+    ancestor = _create_axis("ancestor")
     and_ = __and__ = _create_operator("and")
 
     def anywhere(self, *element_names):
@@ -198,6 +208,7 @@ class Expression(ExpressionType):
         return Expression(ExpressionKind.DESCENDANT, self.current, expressions)
 
     divide = __truediv__ = __div__ = _create_operator("div")
+    following_sibling = _create_axis("following-sibling")
 
     @staticmethod
     def function(name, *arguments):
@@ -285,7 +296,7 @@ class Expression(ExpressionType):
             Expression: A new :class:`Expression` representing the following sibling elements.
         """
 
-        return self.axis("following-sibling")[1].axis("self", *expressions)
+        return self.following_sibling()[1].self_axis(*expressions)
 
     def one_of(self, *values):
         """
@@ -315,6 +326,8 @@ class Expression(ExpressionType):
 
         return cls.function("position")
 
+    preceding_sibling = _create_axis("preceding-sibling")
+
     def previous_sibling(self, *expressions):
         """
         Returns an expression representing the siblings immediately preceding the elements
@@ -327,8 +340,9 @@ class Expression(ExpressionType):
             Expression: A new :class:`Expression` representing the preceding sibling elements.
         """
 
-        return self.axis("preceding-sibling")[1].axis("self", *expressions)
+        return self.preceding_sibling()[1].self_axis(*expressions)
 
+    self_axis = _create_axis("self")
     starts_with = _create_method("starts-with")
     string = property(_create_method("string"))
     string_length = property(_create_method("string-length"))

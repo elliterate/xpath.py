@@ -2,10 +2,10 @@
 A set of :class:`Expression` generators relative to the current expression context, i.e., ``.``.
 """
 
-from xpath.expression import Expression, ExpressionKind, function
+from xpath.expression import Expression, ExpressionType, function
 
 
-current = Expression(ExpressionKind.THIS_NODE)
+current = Expression(ExpressionType.THIS_NODE)
 
 ancestor = current.ancestor
 anywhere = current.anywhere

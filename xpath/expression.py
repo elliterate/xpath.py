@@ -4,7 +4,7 @@ from functools import reduce
 from xpath.literal import Literal
 
 
-class ExpressionKind(Enum):
+class ExpressionType(Enum):
     ANYWHERE = "ANYWHERE"
     ATTR = "ATTR"
     AXIS = "AXIS"
@@ -24,7 +24,7 @@ def _create_axis(name):
     def func(self, *element_names):
         element_names = [Literal(element_name) for element_name in element_names]
 
-        return Expression(ExpressionKind.AXIS, self.current, Literal(name), element_names)
+        return Expression(ExpressionType.AXIS, self.current, Literal(name), element_names)
 
     func.__name__ = name
     func.__doc__ = (
@@ -44,7 +44,7 @@ def _create_axis(name):
 
 def _create_method(name):
     def func(self, *arguments):
-        return Expression(ExpressionKind.FUNCTION, Literal(name), self, *arguments)
+        return Expression(ExpressionType.FUNCTION, Literal(name), self, *arguments)
 
     func.__name__ = name
     func.__doc__ = (
@@ -64,7 +64,7 @@ def _create_method(name):
 
 def _create_operator(operator):
     def func(self, rhs):
-        return Expression(ExpressionKind.BINARY_OPERATOR, Literal(operator), self.current, rhs)
+        return Expression(ExpressionType.BINARY_OPERATOR, Literal(operator), self.current, rhs)
 
     func.__name__ = operator
     func.__doc__ = (
@@ -83,22 +83,22 @@ def _create_operator(operator):
     return func
 
 
-class ExpressionType(object):
+class AbstractExpression(object):
     pass
 
 
-class Expression(ExpressionType):
+class Expression(AbstractExpression):
     """A representation of an expression that can occur in an XPath query."""
 
-    def __init__(self, kind, *args):
+    def __init__(self, type, *args):
         """
         Args:
-            kind (ExpressionKind): The kind of XPath query expression this instance represents.
+            type (ExpressionType): The type of XPath query expression this instance represents.
             *args (List[Expression | Literal | str]): Zero or more arguments for the given XPath
                 query expression.
         """
 
-        self.kind = kind
+        self.type = type
         self.arguments = args
 
     @property
@@ -120,7 +120,7 @@ class Expression(ExpressionType):
             Expression: An :class:`Expression` representing the matched elements.
         """
 
-        return Expression(ExpressionKind.ANYWHERE, [Literal(element_name) for element_name in element_names])
+        return Expression(ExpressionType.ANYWHERE, [Literal(element_name) for element_name in element_names])
 
     def attr(self, attribute_name):
         """
@@ -134,7 +134,7 @@ class Expression(ExpressionType):
             Expression: A new :class:`Expression` representing the desired attribute.
         """
 
-        return Expression(ExpressionKind.ATTR, self.current, Literal(attribute_name))
+        return Expression(ExpressionType.ATTR, self.current, Literal(attribute_name))
 
     def axis(self, axis, *element_names):
         """
@@ -151,7 +151,7 @@ class Expression(ExpressionType):
 
         element_names = [Literal(element_name) for element_name in element_names]
 
-        return Expression(ExpressionKind.AXIS, self.current, Literal(axis), element_names)
+        return Expression(ExpressionType.AXIS, self.current, Literal(axis), element_names)
 
     def child(self, *expressions):
         """
@@ -170,7 +170,7 @@ class Expression(ExpressionType):
             Literal(expression) if isinstance(expression, str) else expression
             for expression in expressions]
 
-        return Expression(ExpressionKind.CHILD, self.current, expressions)
+        return Expression(ExpressionType.CHILD, self.current, expressions)
 
     contains = _create_method("contains")
     count = property(_create_method("count"))
@@ -187,7 +187,7 @@ class Expression(ExpressionType):
             Expression: A new :class:`Expression` representing any matched nodes.
         """
 
-        return Expression(ExpressionKind.CSS, self.current, Literal(css_selector))
+        return Expression(ExpressionType.CSS, self.current, Literal(css_selector))
 
     def descendant(self, *expressions):
         """
@@ -205,7 +205,7 @@ class Expression(ExpressionType):
         expressions = [Literal(expression) if isinstance(expression, str) else expression
                        for expression in expressions]
 
-        return Expression(ExpressionKind.DESCENDANT, self.current, expressions)
+        return Expression(ExpressionType.DESCENDANT, self.current, expressions)
 
     divide = __truediv__ = __div__ = _create_operator("div")
     following_sibling = _create_axis("following-sibling")
@@ -230,7 +230,7 @@ class Expression(ExpressionType):
             Expression: A new :class:`Expression` representing whether any nodes matched.
         """
 
-        return Expression(ExpressionKind.IS, self.current, expression)
+        return Expression(ExpressionType.IS, self.current, expression)
 
     lt = __lt__ = _create_operator("<")
     lte = __le__ = _create_operator("<=")
@@ -248,7 +248,7 @@ class Expression(ExpressionType):
             Expression: A new :class:`Expression` representing the result of the function call.
         """
 
-        return Expression(ExpressionKind.FUNCTION, Literal(name), self, *arguments)
+        return Expression(ExpressionType.FUNCTION, Literal(name), self, *arguments)
 
     minus = _create_operator("-")
     mod = __mod__ = _create_operator("mod")
@@ -317,7 +317,7 @@ class Expression(ExpressionType):
             Expression: A new :class:`Expression` representing the text of this one.
         """
 
-        return Expression(ExpressionKind.TEXT, self.current)
+        return Expression(ExpressionType.TEXT, self.current)
 
     def union(self, expression):
         """
@@ -345,16 +345,16 @@ class Expression(ExpressionType):
             Expression: A new :class:`Expression` representing the filtered expression.
         """
 
-        return Expression(ExpressionKind.WHERE, self.current, expression)
+        return Expression(ExpressionType.WHERE, self.current, expression)
 
     __getitem__ = where
 
 
-class Union(ExpressionType):
+class Union(AbstractExpression):
     """A representation of the union of two expressions."""
 
     def __init__(self, *expressions):
-        self.kind = ExpressionKind.UNION
+        self.type = ExpressionType.UNION
         self.expressions = expressions
 
     @property
@@ -406,4 +406,4 @@ def function(name, *arguments):
         Expression: A new :class:`Expression` representing the result of the function.
     """
 
-    return Expression(ExpressionKind.FUNCTION, Literal(name), *arguments)
+    return Expression(ExpressionType.FUNCTION, Literal(name), *arguments)

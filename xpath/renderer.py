@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from cssselect import HTMLTranslator, parse
 from functools import partial
 from xpath.compat import bytes_, str_
-from xpath.expression import ExpressionKind, ExpressionType
+from xpath.expression import AbstractExpression, ExpressionType
 from xpath.literal import Literal
 from xpath.utils import decode_bytes
 
@@ -12,19 +12,19 @@ class Renderer(object):
     """A rendering context for converting an XPath :class:`Expression` into a valid string query."""
 
     _RENDER_METHOD_NAMES = {
-        ExpressionKind.ANYWHERE: "_anywhere",
-        ExpressionKind.ATTR: "_attribute",
-        ExpressionKind.AXIS: "_axis",
-        ExpressionKind.BINARY_OPERATOR: "_binary_operator",
-        ExpressionKind.CHILD: "_child",
-        ExpressionKind.CSS: "_css",
-        ExpressionKind.DESCENDANT: "_descendant",
-        ExpressionKind.FUNCTION: "_function",
-        ExpressionKind.IS: "_is",
-        ExpressionKind.TEXT: "_text",
-        ExpressionKind.THIS_NODE: "_this_node",
-        ExpressionKind.UNION: "_union",
-        ExpressionKind.WHERE: "_where",
+        ExpressionType.ANYWHERE: "_anywhere",
+        ExpressionType.ATTR: "_attribute",
+        ExpressionType.AXIS: "_axis",
+        ExpressionType.BINARY_OPERATOR: "_binary_operator",
+        ExpressionType.CHILD: "_child",
+        ExpressionType.CSS: "_css",
+        ExpressionType.DESCENDANT: "_descendant",
+        ExpressionType.FUNCTION: "_function",
+        ExpressionType.IS: "_is",
+        ExpressionType.TEXT: "_text",
+        ExpressionType.THIS_NODE: "_this_node",
+        ExpressionType.UNION: "_union",
+        ExpressionType.WHERE: "_where",
     }
 
     def __init__(self, exact=False):
@@ -48,12 +48,12 @@ class Renderer(object):
         """
 
         args = [self._convert_argument(arg) for arg in node.arguments]
-        render_method_name = self._RENDER_METHOD_NAMES[node.kind]
+        render_method_name = self._RENDER_METHOD_NAMES[node.type]
         render_method = getattr(self, render_method_name)
         return render_method(*args)
 
     def _convert_argument(self, argument):
-        if isinstance(argument, ExpressionType):
+        if isinstance(argument, AbstractExpression):
             return self.render(argument)
         if isinstance(argument, list):
             return [self._convert_argument(element) for element in argument]

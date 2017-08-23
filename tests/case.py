@@ -38,7 +38,7 @@ class DSLTestCase(TestCase):
             xpath (str): An XPath query to match.
 
         Returns:
-            list(lxml.etree.Element): A list of matching `lxml.etree.Element` objects.
+            List[lxml.etree.Element]: A list of matching `lxml.etree.Element` objects.
         """
 
         return self.document.xpath(xpath)

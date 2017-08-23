@@ -31,7 +31,7 @@ class Expression(ExpressionType):
         """
         Args:
             kind (ExpressionKind): The kind of XPath query expression this instance represents.
-            *args (list(Expression | Literal | str)): Zero or more arguments for the given XPath
+            *args (List[Expression | Literal | str]): Zero or more arguments for the given XPath
                 query expression.
         """
 
@@ -220,7 +220,7 @@ class Expression(ExpressionType):
         current expression) that match the given expressions or element names.
 
         Args:
-            *expressions (list(Expression | str)): A list of `Expression` objects or element names
+            *expressions (List[Expression | str]): A list of `Expression` objects or element names
                 representing the descendants to match.
 
         Returns:
@@ -455,7 +455,7 @@ class Expression(ExpressionType):
         represented by the current expression.
 
         Args:
-            *expressions (list(str)): A list of expressions representing desired sibling elements.
+            *expressions (List[str]): A list of expressions representing desired sibling elements.
 
         Returns:
             Expression: A new `Expression` representing the following sibling elements.
@@ -469,7 +469,7 @@ class Expression(ExpressionType):
         values.
 
         Args:
-            *values (list(str)): One or more values which the current expression may equal.
+            *values (List[str]): One or more values which the current expression may equal.
 
         Returns:
             Expression: A new `Expression` representing whether any of the values matched.
@@ -522,7 +522,7 @@ class Expression(ExpressionType):
         represented by the current expression.
 
         Args:
-            *expressions (list(str)): A list of expressions representing desired sibling elements.
+            *expressions (List[str]): A list of expressions representing desired sibling elements.
 
         Returns:
             Expression: A new `Expression` representing the preceding sibling elements.

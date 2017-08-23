@@ -20,6 +20,26 @@ class ExpressionKind(Enum):
     WHERE = "WHERE"
 
 
+def _create_method(name):
+    def func(self, *arguments):
+        return Expression(ExpressionKind.FUNCTION, Literal(name), self, *arguments)
+
+    func.__name__ = name
+    func.__doc__ = (
+        """
+        Returns an expression representing the result of the XPath "{function}" function call with
+        the current node as the first argument.
+
+        Args:
+            *arguments: Variable length argument list for the XPath function.
+
+        Returns:
+            Expression: A new :class:`Expression` representing the result of the function call.
+        """.format(function=name))
+
+    return func
+
+
 def _create_operator(operator):
     def func(self, rhs):
         return Expression(ExpressionKind.BINARY_OPERATOR, Literal(operator), self.current, rhs)
@@ -142,30 +162,8 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.CHILD, self.current, expressions)
 
-    def contains(self, expression):
-        """
-        Returns an expression representing whether the content of any nodes (represented by the
-        current expression) approximately match the given expression.
-
-        Args:
-            expression (Expression): The test expression that should be approximately matched.
-
-        Returns:
-            Expression: A new :class:`Expression` representing whether any nodes matched.
-        """
-
-        return self.method("contains", expression)
-
-    @property
-    def count(self):
-        """
-        Returns an expression representing the number of occurrences.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the number of occurrences.
-        """
-
-        return self.method("count")
+    contains = _create_method("contains")
+    count = property(_create_method("count"))
 
     def css(self, css_selector):
         """
@@ -219,20 +217,8 @@ class Expression(ExpressionType):
     equals = __eq__ = _create_operator("=")
     gt = __gt__ = _create_operator(">")
     gte = __ge__ = _create_operator(">=")
-
-    @property
-    def inverse(self):
-        """
-        Returns an expression that represents the inverse of this one.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the inverse of this one.
-        """
-
-        return self.method("not")
-
-    def __invert__(self):
-        return self.inverse
+    inverse = property(_create_method("not"))
+    __invert__ = _create_method("not")
 
     def is_(self, expression):
         """
@@ -284,28 +270,8 @@ class Expression(ExpressionType):
     minus = _create_operator("-")
     mod = __mod__ = _create_operator("mod")
     multiply = __mul__ = _create_operator("*")
-
-    @property
-    def n(self):
-        """
-        Returns an expression that normalizes the whitespace of this one.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the whitespace-normalized expression.
-        """
-
-        return self.method("normalize-space")
-
-    @property
-    def name(self):
-        """
-        Returns an expression that returns the name of the current node.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the name of the current node.
-        """
-
-        return self.method("name")
+    n = property(_create_method("normalize-space"))
+    name = property(_create_method("name"))
 
     def next_sibling(self, *expressions):
         """
@@ -363,66 +329,10 @@ class Expression(ExpressionType):
 
         return self.axis("preceding-sibling")[1].axis("self", *expressions)
 
-    def starts_with(self, expression):
-        """
-        Returns an expression representing whether the current expression starts with the given
-        expression.
-
-        Args:
-            expression (Expression | str): An expression with which the current expression should
-                begin.
-
-        Returns:
-            Expression: A new :class:`Expression` representing whether the current starts with the
-                given.
-        """
-
-        return self.method("starts-with", expression)
-
-    @property
-    def string(self):
-        """
-        Returns an expression representing the string contents of this one.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the string contents of this one.
-        """
-
-        return self.method("string")
-
-    @property
-    def string_length(self):
-        """
-        Returns an expression representing the length of the string contents of this one.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the length of the string contents of
-                this one.
-        """
-
-        return self.method("string-length")
-
-    def substring(self, start, length=None):
-        """
-        Returns an expression representing a portion of the string contents of this one.
-
-        Args:
-            start (int): The starting index.
-            length (int, optional): The length of the substring. Default is None.
-
-        Returns:
-            Expression: A new :class:`Expression` representing a portion of the string contents of
-                this one.
-        """
-
-        assert isinstance(start, int)
-        args = [start]
-
-        if length is not None:
-            assert isinstance(length, int)
-            args.append(length)
-
-        return self.method("substring", *args)
+    starts_with = _create_method("starts-with")
+    string = property(_create_method("string"))
+    string_length = property(_create_method("string-length"))
+    substring = _create_method("substring")
 
     @property
     def text(self):

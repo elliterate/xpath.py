@@ -6,7 +6,7 @@ def inner_text(node):
     Returns the inner text of a given XML node, excluding tags.
 
     Args:
-        node: (lxml.etree.Element): The node whose inner text is desired.
+        node (lxml.etree.Element): The node whose inner text is desired.
 
     Returns:
         str: The inner text of the node.

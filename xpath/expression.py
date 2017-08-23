@@ -42,47 +42,6 @@ class Expression(ExpressionType):
     def current(self):
         return self
 
-    def __add__(self, expression):
-        return self.union(expression)
-
-    def __and__(self, expression):
-        return self.and_(expression)
-
-    def __eq__(self, expression):
-        return self.equals(expression)
-
-    def __ge__(self, rhs):
-        return self.gte(rhs)
-
-    def __getitem__(self, expression):
-        return self.where(expression)
-
-    def __gt__(self, rhs):
-        return self.gt(rhs)
-
-    def __invert__(self):
-        return self.inverse
-
-    def __le__(self, rhs):
-        return self.lte(rhs)
-
-    def __lt__(self, rhs):
-        return self.lt(rhs)
-
-    def __mod__(self, rhs):
-        return self.mod(rhs)
-
-    def __mul__(self, rhs):
-        return self.multiply(rhs)
-
-    def __or__(self, expression):
-        return self.or_(expression)
-
-    def __truediv__(self, rhs):
-        return self.divide(rhs)
-
-    __div__ = __truediv__  # Python 2
-
     def ancestor(self, *element_names):
         """
         Returns an expression matching nodes that are ancestors of this one.
@@ -109,6 +68,8 @@ class Expression(ExpressionType):
         """
 
         return self._binary_operator("and", expression)
+
+    __and__ = and_
 
     def anywhere(self, *element_names):
         """
@@ -260,6 +221,9 @@ class Expression(ExpressionType):
 
         return self._binary_operator("div", rhs)
 
+    __truediv__ = divide  # Python 3
+    __div__ = divide  # Python 2
+
     @staticmethod
     def function(name, *arguments):
         """
@@ -289,6 +253,8 @@ class Expression(ExpressionType):
 
         return self._binary_operator("=", expression)
 
+    __eq__ = equals
+
     def gt(self, rhs):
         """
         Returns an expression representing the ">" binary operation with the current node and
@@ -302,6 +268,8 @@ class Expression(ExpressionType):
         """
 
         return self._binary_operator(">", rhs)
+
+    __gt__ = gt
 
     def gte(self, rhs):
         """
@@ -317,6 +285,8 @@ class Expression(ExpressionType):
 
         return self._binary_operator(">=", rhs)
 
+    __ge__ = gte
+
     @property
     def inverse(self):
         """
@@ -327,6 +297,9 @@ class Expression(ExpressionType):
         """
 
         return self.method("not")
+
+    def __invert__(self):
+        return self.inverse
 
     def is_(self, expression):
         """
@@ -371,6 +344,8 @@ class Expression(ExpressionType):
 
         return self._binary_operator("<", rhs)
 
+    __lt__ = lt
+
     def lte(self, rhs):
         """
         Returns an expression representing the "<=" binary operation with the current node and
@@ -384,6 +359,8 @@ class Expression(ExpressionType):
         """
 
         return self._binary_operator("<=", rhs)
+
+    __le__ = lte
 
     def method(self, name, *arguments):
         """
@@ -428,6 +405,8 @@ class Expression(ExpressionType):
 
         return self._binary_operator("mod", rhs)
 
+    __mod__ = mod
+
     def multiply(self, rhs):
         """
         Returns an expression representing the "*" binary operation with the current node and
@@ -441,6 +420,8 @@ class Expression(ExpressionType):
         """
 
         return self._binary_operator("*", rhs)
+
+    __mul__ = multiply
 
     @property
     def n(self):
@@ -505,6 +486,8 @@ class Expression(ExpressionType):
         """
 
         return self._binary_operator("or", expression)
+
+    __or__ = or_
 
     def plus(self, rhs):
         """
@@ -630,6 +613,8 @@ class Expression(ExpressionType):
 
         return Union(self.current, expression)
 
+    __add__ = union
+
     def where(self, expression):
         """
         Returns an expression that applies another expression as a filtering predicate of this one.
@@ -643,6 +628,8 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.WHERE, self.current, expression)
 
+    __getitem__ = where
+
 
 class Union(ExpressionType):
     """A representation of the union of two expressions."""
@@ -654,12 +641,6 @@ class Union(ExpressionType):
     @property
     def arguments(self):
         return self.expressions
-
-    def __add__(self, expression):
-        return self.union(expression)
-
-    def __getitem__(self, expression):
-        return self.where(expression)
 
     def union(self, expression):
         """
@@ -673,6 +654,8 @@ class Union(ExpressionType):
         """
 
         return Union(self, expression)
+
+    __add__ = union
 
     def where(self, expression):
         """
@@ -688,3 +671,5 @@ class Union(ExpressionType):
         """
 
         return Union(*[expr.where(expression) for expr in self.expressions])
+
+    __getitem__ = where

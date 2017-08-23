@@ -106,6 +106,7 @@ class Expression(AbstractExpression):
         return self
 
     ancestor = _create_axis("ancestor")
+    ancestor_or_self = _create_axis("ancestor-or-self")
     and_ = __and__ = _create_operator("and")
 
     def anywhere(self, *element_names):
@@ -135,6 +136,8 @@ class Expression(AbstractExpression):
         """
 
         return Expression(ExpressionType.ATTR, self.current, Literal(attribute_name))
+
+    attribute = _create_axis("attribute")
 
     def axis(self, axis, *element_names):
         """
@@ -207,7 +210,9 @@ class Expression(AbstractExpression):
 
         return Expression(ExpressionType.DESCENDANT, self.current, expressions)
 
+    descendant_or_self = _create_axis("descendant-or-self")
     divide = __truediv__ = __div__ = _create_operator("div")
+    following = _create_axis("following")
     following_sibling = _create_axis("following-sibling")
     equals = __eq__ = _create_operator("=")
     gt = __gt__ = _create_operator(">")
@@ -255,6 +260,7 @@ class Expression(AbstractExpression):
     multiply = __mul__ = _create_operator("*")
     n = property(_create_method("normalize-space"))
     name = property(_create_method("name"))
+    namespace = _create_axis("namespace")
 
     def next_sibling(self, *expressions):
         """
@@ -285,7 +291,9 @@ class Expression(AbstractExpression):
         return reduce(lambda a, b: a.or_(b), map(self.equals, values))
 
     or_ = __or__ = _create_operator("or")
+    parent = _create_axis("parent")
     plus = _create_operator("+")
+    preceding = _create_axis("preceding")
     preceding_sibling = _create_axis("preceding-sibling")
 
     def previous_sibling(self, *expressions):

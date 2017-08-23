@@ -20,6 +20,27 @@ class ExpressionKind(Enum):
     WHERE = "WHERE"
 
 
+def _create_operator(operator):
+    def func(self, rhs):
+        return Expression(ExpressionKind.BINARY_OPERATOR, Literal(operator), self.current, rhs)
+
+    func.__name__ = operator
+    func.__doc__ = (
+        """
+        Returns an expression representing the "{operator}" binary operation with the current
+        node and the given right-hand side expression.
+
+        Args:
+            rhs (Expression | str | int): The right-hand side expression of the "{operator}"
+                operation.
+
+        Returns:
+            Expression: A new :class:`Expression` representing the "{operator}" operation.
+        """.format(operator=operator))
+
+    return func
+
+
 class ExpressionType(object):
     pass
 
@@ -55,21 +76,7 @@ class Expression(ExpressionType):
 
         return self.axis("ancestor", *element_names)
 
-    def and_(self, expression):
-        """
-        Returns an expression for the boolean-AND of this one and another.
-
-        Args:
-            expression (Expression): The right-hand side expression to be boolean-AND'd with this
-                one.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the boolean-AND of the two.
-        """
-
-        return self._binary_operator("and", expression)
-
-    __and__ = and_
+    and_ = __and__ = _create_operator("and")
 
     def anywhere(self, *element_names):
         """
@@ -115,21 +122,6 @@ class Expression(ExpressionType):
         element_names = [Literal(element_name) for element_name in element_names]
 
         return Expression(ExpressionKind.AXIS, self.current, Literal(axis), element_names)
-
-    def _binary_operator(self, operator, rhs):
-        """
-        Returns an expression representing a binary operation between the current node and a
-        given right-hand side expression.
-
-        Args:
-            operator (str): The binary operator to use.
-            rhs (Expression | int | str): The right-hand side expression of the operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the binary operation.
-        """
-
-        return Expression(ExpressionKind.BINARY_OPERATOR, Literal(operator), self.current, rhs)
 
     def child(self, *expressions):
         """
@@ -207,22 +199,7 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.DESCENDANT, self.current, expressions)
 
-    def divide(self, rhs):
-        """
-        Returns an expression representing the "div" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the "div" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the "div" operation.
-        """
-
-        return self._binary_operator("div", rhs)
-
-    __truediv__ = divide  # Python 3
-    __div__ = divide  # Python 2
+    divide = __truediv__ = __div__ = _create_operator("div")
 
     @staticmethod
     def function(name, *arguments):
@@ -239,53 +216,9 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.FUNCTION, Literal(name), *arguments)
 
-    def equals(self, expression):
-        """
-        Returns an expression representing whether the content of any nodes (represented by the
-        current expression) exactly match the given expression.
-
-        Args:
-            expression (Expression | int): The test expression that should be exactly matched.
-
-        Returns:
-            Expression: A new :class:`Expression` representing whether any nodes matched.
-        """
-
-        return self._binary_operator("=", expression)
-
-    __eq__ = equals
-
-    def gt(self, rhs):
-        """
-        Returns an expression representing the ">" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the ">" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the ">" operation.
-        """
-
-        return self._binary_operator(">", rhs)
-
-    __gt__ = gt
-
-    def gte(self, rhs):
-        """
-        Returns an expression representing the ">=" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the ">=" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the ">=" operation.
-        """
-
-        return self._binary_operator(">=", rhs)
-
-    __ge__ = gte
+    equals = __eq__ = _create_operator("=")
+    gt = __gt__ = _create_operator(">")
+    gte = __ge__ = _create_operator(">=")
 
     @property
     def inverse(self):
@@ -330,37 +263,8 @@ class Expression(ExpressionType):
 
         return cls.function("last")
 
-    def lt(self, rhs):
-        """
-        Returns an expression representing the "<" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the "<" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the "<" operation.
-        """
-
-        return self._binary_operator("<", rhs)
-
-    __lt__ = lt
-
-    def lte(self, rhs):
-        """
-        Returns an expression representing the "<=" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the "<=" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the "<=" operation.
-        """
-
-        return self._binary_operator("<=", rhs)
-
-    __le__ = lte
+    lt = __lt__ = _create_operator("<")
+    lte = __le__ = _create_operator("<=")
 
     def method(self, name, *arguments):
         """
@@ -377,51 +281,9 @@ class Expression(ExpressionType):
 
         return Expression(ExpressionKind.FUNCTION, Literal(name), self, *arguments)
 
-    def minus(self, rhs):
-        """
-        Returns an expression representing the "-" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the "-" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the "-" operation.
-        """
-
-        return self._binary_operator("-", rhs)
-
-    def mod(self, rhs):
-        """
-        Returns an expression representing the "mod" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the "mod" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the "mod" operation.
-        """
-
-        return self._binary_operator("mod", rhs)
-
-    __mod__ = mod
-
-    def multiply(self, rhs):
-        """
-        Returns an expression representing the "*" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the "*" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the "*" operation.
-        """
-
-        return self._binary_operator("*", rhs)
-
-    __mul__ = multiply
+    minus = _create_operator("-")
+    mod = __mod__ = _create_operator("mod")
+    multiply = __mul__ = _create_operator("*")
 
     @property
     def n(self):
@@ -473,35 +335,8 @@ class Expression(ExpressionType):
 
         return reduce(lambda a, b: a.or_(b), map(self.equals, values))
 
-    def or_(self, expression):
-        """
-        Returns an expression for the boolean-OR of this one and another.
-
-        Args:
-            expression (Expression): The right-hand side expression to be boolean-OR'd with this
-                one.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the boolean-OR of the two.
-        """
-
-        return self._binary_operator("or", expression)
-
-    __or__ = or_
-
-    def plus(self, rhs):
-        """
-        Returns an expression representing the "+" binary operation with the current node and
-        the given right-hand side expression.
-
-        Args:
-            rhs (Expression | int): The right-hand side expression of the "+" operation.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the "+" operation.
-        """
-
-        return self._binary_operator("+", rhs)
+    or_ = __or__ = _create_operator("or")
+    plus = _create_operator("+")
 
     @classmethod
     def position(cls):

@@ -209,22 +209,6 @@ class Expression(ExpressionType):
 
     divide = __truediv__ = __div__ = _create_operator("div")
     following_sibling = _create_axis("following-sibling")
-
-    @staticmethod
-    def function(name, *arguments):
-        """
-        Returns an expression that represents the result of an XPath function call.
-
-        Args:
-            name (str): The name of the function to call.
-            *arguments: Variable length argument list for the XPath function.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the result of the function call.
-        """
-
-        return Expression(ExpressionKind.FUNCTION, Literal(name), *arguments)
-
     equals = __eq__ = _create_operator("=")
     gt = __gt__ = _create_operator(">")
     gte = __ge__ = _create_operator(">=")
@@ -247,18 +231,6 @@ class Expression(ExpressionType):
         """
 
         return Expression(ExpressionKind.IS, self.current, expression)
-
-    @classmethod
-    def last(cls):
-        """
-        Returns an expression representing the number of elements in the context.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the number of elements in the
-                context.
-        """
-
-        return cls.function("last")
 
     lt = __lt__ = _create_operator("<")
     lte = __le__ = _create_operator("<=")
@@ -314,18 +286,6 @@ class Expression(ExpressionType):
 
     or_ = __or__ = _create_operator("or")
     plus = _create_operator("+")
-
-    @classmethod
-    def position(cls):
-        """
-        Returns an expression representing the position of elements in the context.
-
-        Returns:
-            Expression: A new :class:`Expression` representing the position of elements.
-        """
-
-        return cls.function("position")
-
     preceding_sibling = _create_axis("preceding-sibling")
 
     def previous_sibling(self, *expressions):
@@ -432,3 +392,18 @@ class Union(ExpressionType):
         return Union(*[expr.where(expression) for expr in self.expressions])
 
     __getitem__ = where
+
+
+def function(name, *arguments):
+    """
+    Returns an expression that represents the result of the given XPath function.
+
+    Args:
+        name (str): The name of the function to call.
+        *arguments: Variable length argument list for the function.
+
+    Returns:
+        Expression: A new :class:`Expression` representing the result of the function.
+    """
+
+    return Expression(ExpressionKind.FUNCTION, Literal(name), *arguments)

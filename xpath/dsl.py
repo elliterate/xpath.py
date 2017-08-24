@@ -3,7 +3,6 @@ A set of :class:`Expression` generators relative to the current expression conte
 """
 
 from xpath.expression import Expression, ExpressionKind
-from xpath.literal import Literal
 
 
 current = Expression(ExpressionKind.THIS_NODE)

@@ -13,6 +13,7 @@ attr = current.attr
 axis = current.axis
 child = current.child
 contains = current.contains
+contains_word = current.contains_word
 count = current.count
 css = current.css
 descendant = current.descendant

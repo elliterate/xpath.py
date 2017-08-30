@@ -173,6 +173,21 @@ class Expression(AbstractExpression):
         return Expression(ExpressionType.CHILD, self.current, expressions)
 
     contains = _create_method("contains")
+
+    def contains_word(self, word):
+        """
+        Returns an expression representing whether the given word is contained in the current
+        expression.
+
+        Args:
+            word (str): The word to find.
+
+        Returns:
+            Expression: A new :class:`Expression` representing whether the given word is contained.
+        """
+
+        return function("concat", " ", self.current.n, " ").contains(" {} ".format(word))
+
     count = property(_create_method("count"))
 
     def css(self, css_selector):

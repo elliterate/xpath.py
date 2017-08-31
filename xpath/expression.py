@@ -270,6 +270,8 @@ class Expression(AbstractExpression):
 
         return self.following_sibling()[1].self_axis(*expressions)
 
+    not_equals = __ne__ = _create_operator("!=")
+
     def one_of(self, *values):
         """
         Returns an expression representing whether the current expression equals one of the given

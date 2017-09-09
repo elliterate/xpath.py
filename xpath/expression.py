@@ -353,7 +353,13 @@ class Expression(AbstractExpression):
 
 
 def _create_map(name):
-    method = getattr(Expression, name)
+    attr = getattr(Expression, name)
+
+    if isinstance(attr, property):
+        def method(expr):
+            attr.__getitem__(expr)
+    else:
+        method = attr
 
     def map(self, *args, **kwargs):
         return Union(*[method(expr, *args, **kwargs)
@@ -361,16 +367,17 @@ def _create_map(name):
 
     map.__name__ = name
     map.__doc__ = ("""
-        Returns a new union where each expression of this one has had :meth:`Expression.{name}`
-        applied.
+        Returns a new union with the :{role}:`Expression.{name}` for each expression of this one.
 
         Args:
-            *args: Variable length argument list for :meth:`Expression.{name}`.
-            **kwargs: Arbitrary keyword arguments for :meth:`Expression.{name}`.
+            *args: Variable length argument list for :{role}:`Expression.{name}`.
+            **kwargs: Arbitrary keyword arguments for :{role}:`Expression.{name}`.
 
         Returns:
             Union: A new :class:`Union` representing the mapped expressions.
-        """.format(name=name))
+        """.format(
+            role="attr" if isinstance(attr, property) else "meth",
+            name=name))
 
     return map
 
@@ -401,6 +408,45 @@ class Union(AbstractExpression):
 
     __add__ = union
 
+    ancestor = _create_map("ancestor")
+    and_ = __and__ = _create_map("and_")
+    anywhere = _create_map("anywhere")
+    attr = _create_map("attr")
+    axis = _create_map("axis")
+    child = _create_map("child")
+    contains = _create_map("contains")
+    count = property(_create_map("count"))
+    css = _create_map("css")
+    descendant = _create_map("descendant")
+    divide = __truediv__ = __div__ = _create_map("divide")
+    following_sibling = _create_map("following_sibling")
+    equals = __eq__ = _create_map("equals")
+    gt = __gt__ = _create_map("gt")
+    gte = __ge__ = _create_map("gte")
+    inverse = property(_create_map("inverse"))
+    __invert__ = _create_map("inverse")
+    is_ = _create_map("is_")
+    lt = __lt__ = _create_map("lt")
+    lte = __le__ = _create_map("lte")
+    method = _create_map("method")
+    minus = _create_map("minus")
+    mod = __mod__ = _create_map("mod")
+    multiply = __mul__ = _create_map("multiply")
+    n = property(_create_map("n"))
+    name = property(_create_map("name"))
+    next_sibling = _create_map("next_sibling")
+    not_equals = __ne__ = _create_map("not_equals")
+    one_of = _create_map("one_of")
+    or_ = __or__ = _create_map("or_")
+    plus = _create_map("plus")
+    preceding_sibling = _create_map("preceding_sibling")
+    previous_sibling = _create_map("previous_sibling")
+    self_axis = _create_map("self_axis")
+    starts_with = _create_map("starts_with")
+    string = property(_create_map("string"))
+    string_length = property(_create_map("string_length"))
+    substring = _create_map("substring")
+    text = property(_create_map("text"))
     where = __getitem__ = _create_map("where")
 
 

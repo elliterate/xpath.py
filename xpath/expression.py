@@ -352,6 +352,29 @@ class Expression(AbstractExpression):
     __getitem__ = where
 
 
+def _create_map(name):
+    method = getattr(Expression, name)
+
+    def map(self, *args, **kwargs):
+        return Union(*[method(expr, *args, **kwargs)
+                       for expr in self.expressions])
+
+    map.__name__ = name
+    map.__doc__ = ("""
+        Returns a new union where each expression of this one has had :meth:`Expression.{name}`
+        applied.
+
+        Args:
+            *args: Variable length argument list for :meth:`Expression.{name}`.
+            **kwargs: Arbitrary keyword arguments for :meth:`Expression.{name}`.
+
+        Returns:
+            Union: A new :class:`Union` representing the mapped expressions.
+        """.format(name=name))
+
+    return map
+
+
 class Union(AbstractExpression):
     """A representation of the union of two expressions."""
 
@@ -378,22 +401,7 @@ class Union(AbstractExpression):
 
     __add__ = union
 
-    def where(self, expression):
-        """
-        Returns a new union where each expression of this one has had the given predicate
-        expression applied.
-
-        Args:
-            expression (Expression): The predicate expression that should filter the expressions
-                in this union.
-
-        Returns:
-            Union: A new :class:`Union` representing the filtered expressions.
-        """
-
-        return Union(*[expr.where(expression) for expr in self.expressions])
-
-    __getitem__ = where
+    where = __getitem__ = _create_map("where")
 
 
 def function(name, *arguments):

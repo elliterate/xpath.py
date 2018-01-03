@@ -45,9 +45,9 @@ License
 
 (The MIT License)
 
-Copyright © 2010 Jonas Nicklas
+Copyright © 2010-2018 Jonas Nicklas
 
-Copyright © 2016 Ian Lesperance
+Copyright © 2016-2018 Ian Lesperance
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the ‘Software’), to deal in

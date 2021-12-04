@@ -9,4 +9,4 @@ class TestCount(DSLTestCase):
     def test_counts_the_number_of_occurrences(self):
         xpath = to_xpath(x.descendant("div")[x.descendant("p").count == 2])
         results = self.find_all(xpath)
-        self.assertEquals(results[0].get("id"), "preference")
+        self.assertEqual(results[0].get("id"), "preference")

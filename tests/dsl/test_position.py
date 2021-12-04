@@ -10,5 +10,5 @@ class TestPosition(DSLTestCase):
     def test_returns_the_position_of_elements_in_the_context(self):
         xpath = to_xpath(x.descendant("p")[x.position() == 2])
         results = self.find_all(xpath)
-        self.assertEquals(inner_text(results[0]), "Bax")
-        self.assertEquals(inner_text(results[1]), "Bax")
+        self.assertEqual(inner_text(results[0]), "Bax")
+        self.assertEqual(inner_text(results[1]), "Bax")

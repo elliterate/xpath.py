@@ -6,8 +6,8 @@ facilitate writing complex XPath queries from Python code.
 
 |build|_
 
-.. |build| image:: https://secure.travis-ci.org/elliterate/xpath.py.svg?branch=master
-.. _build: http://travis-ci.org/elliterate/xpath.py
+.. |build| image:: https://github.com/elliterate/xpath.py/actions/workflows/main.yml/badge.svg?branch=main&event=push
+.. _build: https://github.com/elliterate/xpath.py/actions/workflows/main.yml?query=branch%3Amain+event%3Apush
 
 Generating expressions
 ----------------------
